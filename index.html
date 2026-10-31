@@ -621,7 +621,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   /* ---------- render ---------- */
   function renderSub(){
     var n=function(s){return games.filter(function(g){return hasStatus(g,s)}).length};
-    $('sub').textContent=games.length+' games  /  '+n('backlog')+' in backlog  /  '+n('playing')+' playing';
+    var playedN=games.filter(function(g){return ['playing','played','completed','dropped'].some(function(x){return hasStatus(g,x)})}).length;
+    $('sub').textContent=games.length+' games  /  '+playedN+' played  /  '+n('playing')+' playing';
   }
   function renderStatus(){
     var counts={}; games.forEach(function(g){statusesOf(g).forEach(function(x){counts[x]=(counts[x]||0)+1})});
