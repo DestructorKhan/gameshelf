@@ -138,7 +138,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .tag[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 .tag[aria-pressed="true"]::before,.tag[aria-pressed="true"] .n{color:inherit; opacity:.8}
 .tags.pick{max-height:132px; overflow-y:auto}
-.tag.mini{font-size:11.5px; padding:2px 7px}
+.tag.mini{font-size:11px; padding:1px 6px}
+.tag.more{border-style:dashed; color:var(--muted); background:none}
 .tag.more{border-style:dashed; background:transparent}
 .tag.more::before{content:""}
 .resultline{display:flex; justify-content:space-between; align-items:center; gap:10px; min-height:28px; font:400 13px var(--font-mono); color:var(--muted)}
@@ -147,17 +148,17 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .list{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden}
 .game{border-bottom:1px solid var(--line)}
 .game:last-child{border-bottom:0}
-.g-main{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; padding:14px 16px; align-items:center}
-.g-info{min-width:0; display:flex; flex-direction:column; gap:4px}
-.g-title{font-size:17px; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; overflow-wrap:anywhere}
+.g-main{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; padding:9px 12px; align-items:center}
+.g-info{min-width:0; display:flex; flex-direction:column; gap:2px}
+.g-title{font-size:15.5px; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; overflow-wrap:anywhere}
 .eg{font:500 10px var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); padding:1px 5px; border-radius:3px}
-.g-meta{margin:0; font:400 12.5px var(--font-mono); color:var(--muted)}
+.g-meta{margin:0; font:400 12px var(--font-mono); color:var(--muted)}
 .check{flex-direction:row; align-items:center; gap:8px; cursor:pointer}
 .check input{width:auto; margin:0; accent-color:var(--accent)}
 .check>span{font:500 14px var(--font-body); letter-spacing:0; text-transform:none; color:var(--ink)}
 .tag.plain::before{content:""}
-.g-notes,.g-inc{margin:2px 0 0; font-size:13.5px; line-height:1.45; color:var(--muted); white-space:pre-line; overflow-wrap:anywhere; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; overflow:hidden}
-.g-tags{display:flex; flex-wrap:wrap; gap:5px}
+.g-notes,.g-inc{margin:2px 0 0; font-size:13px; line-height:1.35; color:var(--muted); white-space:pre-line; overflow-wrap:anywhere; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden}
+.g-tags{display:flex; flex-wrap:wrap; gap:4px; margin-top:2px}
 .nest-toggle{display:inline-flex; align-items:center; gap:8px; align-self:flex-start; border:0; background:none; padding:3px 0; font:500 13px var(--font-mono); color:var(--accent)}
 .nest-toggle .chev{width:7px; height:7px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(-45deg); margin-right:2px}
 .nest-toggle[aria-expanded="true"] .chev{transform:rotate(45deg)}
@@ -165,7 +166,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .nested .game{border-bottom:1px solid var(--line)}
 .nested .game:last-child{border-bottom:0}
 .nested .g-main{grid-template-columns:minmax(0,1fr) auto; padding-left:16px}
-.nested .g-title{font-size:15.5px}
+.nested .g-title{font-size:14.5px}
 .nested .editor{padding-left:16px}
 .mem-order{list-style:none; margin:0; padding:0; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--surface)}
 .mem-order li{display:flex; align-items:center; gap:8px; padding:6px 8px 6px 12px; border-bottom:1px solid var(--line)}
@@ -192,17 +193,18 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .mem-results button:hover,.mem-results button:focus-visible{background:var(--accent-soft)}
 .mem-results small{color:var(--muted); font:400 12px var(--font-mono)}
 .mem-results .none{padding:9px 12px; font-size:13px; color:var(--muted)}
-.g-side{display:flex; flex-direction:column; align-items:flex-end; gap:8px}
-.list.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; background:none; border:0; border-radius:0; overflow:visible}
+.g-side{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
+.list.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; background:none; border:0; border-radius:0; overflow:visible}
 .list.grid>.game{background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; display:flex; flex-direction:column}
 .list.grid>.game>.g-main{grid-template-columns:minmax(0,1fr); flex:1; align-content:space-between}
 .list.grid>.game>.g-main .g-side{grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center}
 .list.grid>.game>.g-main .pills{flex-direction:row; flex-wrap:wrap; align-items:center}
 .list.grid>.game:has(>.editor), .list.grid>.game:has(>.nested){grid-column:1/-1}
-.status-pill{appearance:none; -webkit-appearance:none; width:auto; padding:5px 12px; border-radius:999px; font-weight:600; font-size:13px; border:1px solid var(--c); background:var(--bg-c); color:var(--c); text-align:center; cursor:pointer}
+.status-pill{appearance:none; -webkit-appearance:none; width:auto; padding:0 8px; line-height:1.55; border-radius:999px; font-weight:600; font-size:11px; border:1px solid var(--c); background:var(--bg-c); color:var(--c); text-align:center; cursor:pointer}
 .backup{display:flex; flex-direction:column; gap:8px; margin-top:14px}
 .backup-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-.pills{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
+.pills{display:flex; flex-direction:column; align-items:flex-end; gap:2px}
+.g-side .btn.sm{padding:1px 8px; font-size:12px}
 .stars{font-size:13px; letter-spacing:1px; color:var(--accent)}
 .stars .off{color:var(--line)}
 .editor{padding:4px 16px 18px 16px; display:flex; flex-direction:column; gap:14px}
@@ -221,7 +223,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   body{padding-block-start:16px}
   .top h1{font-size:28px}
   input,select,textarea{font-size:16px}
-  .g-main{grid-template-columns:minmax(0,1fr); gap:10px 12px}
+  .g-main{grid-template-columns:minmax(0,1fr); gap:6px 12px}
   .pills{flex-direction:row; flex-wrap:wrap; align-items:center}
   .g-side{grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center}
   .editor{padding-left:16px}
@@ -323,7 +325,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     <div class="tagbar">
       <div class="taghead">
         <span class="label" id="tag-label">Tags</span>
-        <span class="seg" role="group" aria-label="How selected tags match">
+        <span class="seg" id="match-seg" role="group" aria-label="How selected tags match">
           <button class="btn" type="button" data-mode="any" aria-pressed="true">Match any</button>
           <button class="btn" type="button" data-mode="all" aria-pressed="false">Match all</button>
         </span>
@@ -380,9 +382,10 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   normalizeGames(games);
   var f={q:'',status:new Set(),tags:new Set(),mode:'any',sort:'added'};
   var openId=null, confirmDel=null, showAllTags=false;
+  var TAG_CAP=2, tagsExpanded={};
   var nestPref={};
-  var ui={status:true,tags:true,view:'list'};
-  try{var savedUi=JSON.parse(localStorage.getItem('gameshelf.ui')||'null'); if(savedUi){ui.status=savedUi.status!==false; ui.tags=savedUi.tags!==false; ui.view=savedUi.view==='grid'?'grid':'list'}}catch(e){}
+  var ui={status:false,tags:false,view:'list',uv:2};
+  try{var savedUi=JSON.parse(localStorage.getItem('gameshelf.ui')||'null'); if(savedUi){ui.view=savedUi.view==='grid'?'grid':'list'; if(savedUi.uv===2){ui.status=savedUi.status===true; ui.tags=savedUi.tags===true}}}catch(e){}
   function toggleUi(k){ui[k]=!ui[k]; try{localStorage.setItem('gameshelf.ui',JSON.stringify(ui))}catch(e){} renderToggles()}
 
   /* ---------- storage ---------- */
@@ -634,7 +637,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     $('toggle-status').setAttribute('aria-expanded',String(ui.status));
     $('status-label').textContent='Status'+(sc?'  /  '+sc+' selected':'');
     $('tag-chips').hidden=!ui.tags;
-    document.querySelector('.seg').hidden=!ui.tags;
+    $('match-seg').hidden=!ui.tags;
     $('toggle-tags').textContent=ui.tags?'Hide':'Show';
     $('toggle-tags').setAttribute('aria-expanded',String(ui.tags));
     $('tag-label').textContent='Tags'+(tc?'  /  '+tc+' selected':'');
@@ -701,7 +704,9 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     var open=openId===g.id, r=g.rating||0, active=isActive();
     var kids=entry?entry.kids:[], hit=entry?entry.hit:[];
     var meta=[(g.platforms||[]).join(', '),g.year].filter(Boolean).map(esc).join('  /  ');
-    var tags=sortedTags(g).map(function(t){return '<button type="button" class="tag mini" data-act="tag" data-tag="'+esc(t)+'" aria-pressed="'+f.tags.has(t)+'">'+esc(t)+'</button>'}).join('');
+    var allT=sortedTags(g), expanded=!!tagsExpanded[g.id], shownT=(expanded||allT.length<=TAG_CAP)?allT:allT.slice(0,TAG_CAP);
+    var tags=shownT.map(function(t){return '<button type="button" class="tag mini" data-act="tag" data-tag="'+esc(t)+'" aria-pressed="'+f.tags.has(t)+'">'+esc(t)+'</button>'}).join('');
+    if(allT.length>TAG_CAP) tags+='<button type="button" class="tag mini more" data-act="moretags" aria-expanded="'+expanded+'">'+(expanded?'Show fewer':'+'+(allT.length-TAG_CAP)+' more')+'</button>';
     var stars=r?'<span class="stars" role="img" aria-label="Rated '+r+' of 5">'+'&#9733;'.repeat(r)+'<span class="off">'+'&#9733;'.repeat(5-r)+'</span></span>':'';
     var nestBlock='', nestList='';
     if(g.isBundle){
@@ -902,7 +907,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     if(b.dataset.more){showAllTags=!showAllTags; renderTags(); return}
     if(b.dataset.tag!=null) tagClick(b.dataset.tag);
   });
-  document.querySelector('.seg').addEventListener('click',function(e){
+  $('match-seg').addEventListener('click',function(e){
     var b=e.target.closest('[data-mode]'); if(!b) return;
     f.mode=b.dataset.mode; renderTags(); renderList();
   });
@@ -933,6 +938,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   list.addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     var li=b.closest('.game'), g=li&&find(li.dataset.id), act=b.dataset.act; if(!g||(!act&&!b.dataset.sts)) return;
+    if(act==='moretags'){tagsExpanded[g.id]=!tagsExpanded[g.id]; rerenderKeepingFocus(g.id,'[data-act="moretags"]'); return}
     if(act==='tag'){tagClick(b.dataset.tag); return}
     if(act==='toggle'){openId=(openId===g.id)?null:g.id; confirmDel=null; renderList(); return}
     if(b.dataset.sts){
