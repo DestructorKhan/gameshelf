@@ -147,8 +147,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .list{list-style:none; margin:0; padding:0; background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden}
 .game{border-bottom:1px solid var(--line)}
 .game:last-child{border-bottom:0}
-.g-main{display:grid; grid-template-columns:46px minmax(0,1fr) auto; gap:14px; padding:14px 16px; align-items:center}
-.cover{width:46px; height:60px; border-radius:4px; background:hsl(var(--h) 42% 34%); color:#fff; display:grid; place-items:center; font:700 15px var(--font-display); letter-spacing:.02em; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.g-main{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; padding:14px 16px; align-items:center}
 .g-info{min-width:0; display:flex; flex-direction:column; gap:4px}
 .g-title{font-size:17px; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; overflow-wrap:anywhere}
 .eg{font:500 10px var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); padding:1px 5px; border-radius:3px}
@@ -165,10 +164,9 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .nested{list-style:none; margin:0 0 0 20px; padding:0; background:var(--surface-2); border-top:1px solid var(--line); border-left:2px solid var(--muted)}
 .nested .game{border-bottom:1px solid var(--line)}
 .nested .game:last-child{border-bottom:0}
-.nested .g-main{grid-template-columns:36px minmax(0,1fr) auto; padding-left:16px}
-.nested .cover{width:36px; height:46px; font-size:13px}
+.nested .g-main{grid-template-columns:minmax(0,1fr) auto; padding-left:16px}
 .nested .g-title{font-size:15.5px}
-.nested .editor{padding-left:66px}
+.nested .editor{padding-left:16px}
 .mem-order{list-style:none; margin:0; padding:0; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--surface)}
 .mem-order li{display:flex; align-items:center; gap:8px; padding:6px 8px 6px 12px; border-bottom:1px solid var(--line)}
 .mem-order li:last-child{border-bottom:0}
@@ -201,7 +199,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .pills{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
 .stars{font-size:13px; letter-spacing:1px; color:var(--accent)}
 .stars .off{color:var(--line)}
-.editor{padding:4px 16px 18px 76px; display:flex; flex-direction:column; gap:14px}
+.editor{padding:4px 16px 18px 16px; display:flex; flex-direction:column; gap:14px}
 .editor-tags{display:flex; flex-direction:column; gap:8px}
 .tag .x{border:0; background:none; padding:0 0 0 2px; color:var(--muted); font-size:14px; line-height:1}
 .rate{display:flex; gap:2px}
@@ -217,10 +215,11 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   body{padding-block-start:16px}
   .top h1{font-size:28px}
   input,select,textarea{font-size:16px}
-  .g-main{grid-template-columns:46px minmax(0,1fr); gap:10px 12px}
+  .g-main{grid-template-columns:minmax(0,1fr); gap:10px 12px}
+  .pills{flex-direction:row; flex-wrap:wrap; align-items:center}
   .g-side{grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center}
   .editor{padding-left:16px}
-  .nested .g-main{grid-template-columns:36px minmax(0,1fr); padding-left:16px}
+  .nested .g-main{grid-template-columns:minmax(0,1fr); padding-left:16px}
   .nested .editor{padding-left:16px}
 }
 @media (prefers-reduced-motion:no-preference){
@@ -709,7 +708,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     }
     return '<li class="game'+(nested?' nested-game':'')+'" data-id="'+g.id+'">'+
       '<div class="g-main">'+
-        '<div class="cover" style="--h:'+hue(g.title)+'" aria-hidden="true">'+esc(initials(g.title))+'</div>'+
         '<div class="g-info">'+
           '<h3 class="g-title"><span class="t">'+esc(g.title)+'</span>'+(g.isBundle?'<span class="eg">Bundle  /  '+kids.length+'</span>':'')+(g.sample?'<span class="eg">Example</span>':'')+'</h3>'+
           (meta?'<p class="g-meta">'+meta+'</p>':'')+
