@@ -100,6 +100,11 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 /* panels */
 .panel{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:18px; display:flex; flex-direction:column; gap:14px}
 .panel h2{font-size:18px}
+.game{scroll-margin-top:12px}
+.add-head,.add-foot{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.add-actions{display:inline-flex; align-items:center; gap:8px; margin-left:auto}
+.btn.lg{padding:12px 26px; font-size:16px; font-weight:600}
+.x-btn{display:inline-grid; place-items:center}
 .hint{margin:0; font-size:13px; color:var(--muted)}
 .hint.err{color:var(--danger)}
 .row{display:flex; gap:8px; align-items:stretch}
@@ -299,7 +304,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   </div>
 
   <section class="panel" id="add" hidden aria-labelledby="add-h">
-    <h2 id="add-h">Add a game</h2>
+    <div class="add-head"><h2 id="add-h">Add a game</h2><span class="add-actions"><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span></div>
     <form id="add-form" class="grid" autocomplete="off">
       <div style="grid-column:1/-1; display:flex; flex-direction:column; gap:6px">
         <label><span>Title</span><input name="title" id="f-title" required autocomplete="off"></label>
@@ -328,9 +333,10 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
         <div class="tags pick" id="f-tagpick" role="group" aria-label="Existing tags"></div>
       </div>
       <label style="grid-column:1/-1"><span>Notes</span><textarea name="notes" id="f-notes" placeholder="Why you want to play it, who recommended it, where you left off"></textarea></label>
-      <div style="grid-column:1/-1; display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-        <button class="btn primary" type="submit">Add to shelf</button>
+      <div class="add-foot" style="grid-column:1/-1">
+        <button type="submit" form="add-form" class="btn primary lg">Add Game</button>
         <span class="hint" id="add-msg" role="status"></span>
+        <span class="add-actions"><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span>
       </div>
     </form>
   </section>
@@ -882,7 +888,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
         '</div>'+
         '<div class="g-side">'+
           '<div class="pills">'+statusesOf(g).map(function(x){return '<span class="status-pill st-'+x+'">'+statusLabel(x)+'</span>'}).join('')+'</div>'+
-          (exp?stars+'<button type="button" class="btn sm" data-act="toggle" aria-expanded="'+open+'">'+(open?'Close':'Edit')+'</button>':'')+
+          (exp?stars+'<button type="button" class="btn sm" data-act="toggle" aria-expanded="'+open+'">'+(open?'Done':'Edit')+'</button>':'')+
         '</div>'+
       '</div>'+
       (open?editorHTML(g):'')+nestList+
@@ -1250,7 +1256,12 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     if(act==='expand'){if(openId===g.id) return; expandedRows[g.id]=!expandedRows[g.id]; rerenderKeepingFocus(g.id,'[data-act="expand"]'); return}
     if(act==='moretags'){tagsExpanded[g.id]=!tagsExpanded[g.id]; rerenderKeepingFocus(g.id,'[data-act="moretags"]'); return}
     if(act==='tag'){tagClick(b.dataset.tag); return}
-    if(act==='toggle'){openId=(openId===g.id)?null:g.id; confirmDel=null; renderList(); return}
+    if(act==='toggle'){
+      var closing=openId===g.id;
+      openId=closing?null:g.id; confirmDel=null; renderList();
+      if(closing){var row=list.querySelector('li.game[data-id="'+g.id+'"]'); if(row) row.scrollIntoView({block:'start'})}
+      return;
+    }
     if(b.dataset.sts){
       var cur=statusesOf(g), id=b.dataset.sts, nx=cur.indexOf(id)>=0?cur.filter(function(x){return x!==id}):cur.concat(id);
       if(setStatuses(g,nx)){persist(); rerenderKeepingFocus(g.id,'[data-sts="'+id+'"]')} return;
@@ -1460,6 +1471,11 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   });
 
   var draftStatuses=[defaultStatus()];
+  document.querySelectorAll('[data-add-discard]').forEach(function(btn){btn.addEventListener('click',function(){
+    $('add-form').reset(); draftPlatforms=[]; draftMembers.clear(); draftStatuses=[defaultStatus()];
+    $('add-msg').textContent=''; syncBackloggdLink(); renderAddStatus(); render();
+    setPanel('add','btn-add',false); $('btn-add').focus();
+  })});
   function renderAddStatus(){$('f-status').innerHTML=statusChipsHTML(draftStatuses,'data-ast')}
   renderAddStatus();
   $('f-status').addEventListener('click',function(e){
