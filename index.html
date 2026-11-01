@@ -246,6 +246,9 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   .top h1{font-size:28px}
   input,select,textarea{font-size:16px}
   .g-main{grid-template-columns:minmax(0,1fr); gap:6px 12px}
+  .taghead{gap:6px}
+  .taghead .seg .btn{padding:4px 7px; font-size:12.5px}
+  .taghead .btn.sm{padding:4px 8px}
   .pills{flex-direction:row; flex-wrap:wrap; align-items:center}
   .g-side{grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center}
   .editor{padding-left:16px}
@@ -325,6 +328,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     <div class="tagbar">
       <div class="taghead">
         <span class="label" id="status-label">Status</span>
+        <span class="spacer"></span>
+        <button class="btn sm" type="button" id="toggle-status" aria-expanded="true" aria-controls="status-chips">Hide</button>
       </div>
       <div class="status-row" id="status-chips" role="group" aria-label="Filter by status"></div>
     </div>
@@ -338,6 +343,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
         <span class="spacer"></span>
         <button class="btn sm" type="button" id="manage-tags" aria-expanded="false" aria-controls="tag-manager">Manage</button>
         <button class="btn sm" type="button" id="clear-tags" hidden>Clear tags</button>
+        <button class="btn sm" type="button" id="toggle-tags" aria-expanded="true" aria-controls="tag-chips">Hide</button>
       </div>
       <div class="tags" id="tag-chips" role="group" aria-label="Filter by tag"></div>
       <div class="panel" id="tag-manager" hidden aria-labelledby="tm-h">
@@ -405,8 +411,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   var openId=null, confirmDel=null, showAllTags=false;
   var TAG_CAP=2, tagsExpanded={}, expandedRows={};
   var nestPref={};
-  var ui={filters:false,view:'list',uv:3};
-  try{var savedUi=JSON.parse(localStorage.getItem('gameshelf.ui')||'null'); if(savedUi){ui.view=savedUi.view==='grid'?'grid':'list'; ui.filters=savedUi.filters===true}}catch(e){}
+  var ui={filters:false,status:true,tags:true,view:'list',uv:3};
+  try{var savedUi=JSON.parse(localStorage.getItem('gameshelf.ui')||'null'); if(savedUi){ui.view=savedUi.view==='grid'?'grid':'list'; ui.filters=savedUi.filters===true; ui.status=savedUi.status!==false; ui.tags=savedUi.tags!==false}}catch(e){}
   function toggleUi(k){ui[k]=!ui[k]; try{localStorage.setItem('gameshelf.ui',JSON.stringify(ui))}catch(e){} renderToggles()}
 
   /* ---------- storage ---------- */
@@ -657,7 +663,14 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     $('filters-body').hidden=!ui.filters;
     $('toggle-filters').setAttribute('aria-expanded',String(ui.filters));
     $('filters-count').textContent=n?n+' active':'';
+    $('status-chips').hidden=!ui.status;
+    $('toggle-status').textContent=ui.status?'Hide':'Show';
+    $('toggle-status').setAttribute('aria-expanded',String(ui.status));
     $('status-label').textContent='Status'+(sc?'  /  '+sc+' selected':'');
+    $('tag-chips').hidden=!ui.tags;
+    $('match-seg').hidden=!ui.tags;
+    $('toggle-tags').textContent=ui.tags?'Hide':'Show';
+    $('toggle-tags').setAttribute('aria-expanded',String(ui.tags));
     $('tag-label').textContent='Tags'+(tc?'  /  '+tc+' selected':'');
   }
   function renderTags(){
@@ -938,6 +951,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   });
   renderView();
   $('toggle-filters').addEventListener('click',function(){toggleUi('filters')});
+  $('toggle-status').addEventListener('click',function(){toggleUi('status')});
+  $('toggle-tags').addEventListener('click',function(){toggleUi('tags')});
   $('clear-tags').addEventListener('click',function(){f.tags.clear(); renderTags(); renderList()});
   function searchUi(open){
     $('q').hidden=!open; $('search-toggle').setAttribute('aria-expanded',String(open)); $('search-dot').hidden=!(f.q&&!open);
