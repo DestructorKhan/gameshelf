@@ -206,6 +206,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .mem-order .btn{padding:5px 11px}
 .mem-order .btn:disabled{opacity:.35; cursor:default}
 .tags:empty{display:none}
+.title-cell{display:flex; flex-direction:column; gap:6px; min-width:0}
+.title-cell .ext-link{align-self:flex-start}
 .ext-link{font:500 13px var(--font-mono); color:var(--accent); text-decoration:underline; text-underline-offset:3px}
 .ext-link[aria-disabled="true"]{color:var(--muted); text-decoration:none; pointer-events:none}
 .tm-list{list-style:none; margin:0; padding:0; border:1px solid var(--line); border-radius:6px; overflow-x:hidden; overflow-y:auto; max-height:320px; background:var(--surface)}
@@ -829,7 +831,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     return '<div class="editor">'+
       '<div class="editor-tags"><span class="fieldlabel">Status, pick any that apply</span><div class="status-row" role="group" aria-label="Status">'+statusChipsHTML(statusesOf(g),'data-sts')+'</div></div>'+
       '<div class="grid">'+
-        '<label><span>Title</span><input data-f="title" value="'+esc(g.title)+'"></label>'+
+        '<div class="title-cell"><label><span>Title</span><input data-f="title" value="'+esc(g.title)+'"></label>'+
+          '<a class="ext-link" data-bl-edit target="_blank" rel="noopener noreferrer" href="'+esc(backloggdUrl(g.title))+'">Search Backloggd for this title</a></div>'+
         '<label><span>Year</span><input data-f="year" inputmode="numeric" value="'+esc(g.year||'')+'"></label>'+
         '<label><span>Started</span><input type="date" data-f="started" value="'+esc(g.started||'')+'"></label>'+
         '<label><span>Finished</span><input type="date" data-f="finished" value="'+esc(g.finished||'')+'"></label>'+
@@ -1309,7 +1312,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       }
       persist(); render(); return;
     }
-    if(k==='title'){var t=el.value.trim(); if(!t){el.value=g.title; return} g.title=t; li.querySelector(':scope > .g-main .t').textContent=t}
+    if(k==='title'){var t=el.value.trim(); if(!t){el.value=g.title; return} g.title=t; li.querySelector(':scope > .g-main .t').textContent=t; var bl=li.querySelector(':scope > .editor [data-bl-edit]'); if(bl) bl.href=backloggdUrl(t)}
     else if(k==='year'){
       g.year=parseInt(el.value,10)||null;
       var h3=li.querySelector(':scope > .g-main .g-title'), sub=h3.querySelector('.g-sub'), mt=metaText(g);
