@@ -8,3 +8,5 @@ Game Shelf: deploy to GitHub Pages
 6. Move your games over: in the Claude version tap Export JSON, then on the new site tap Import JSON and choose the file.
 
 Notes: your shelf is stored in that browser only (localStorage). Use Export JSON now and then as a backup.
+
+GIST SYNC (optional): click Sync, paste a GitHub token (fine-grained with Gists: Read and write, or classic with the gist scope). Upload creates a private gist; Download pulls it back. The token is kept in this browser only.

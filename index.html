@@ -289,10 +289,27 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       <div class="backup-row">
         <button type="button" class="btn sm" id="btn-export">Export JSON</button>
         <button type="button" class="btn sm" id="btn-import">Import JSON</button>
+        <button type="button" class="btn sm" id="btn-sync" hidden aria-expanded="false">Sync</button>
         <input type="file" id="import-file" accept=".json,application/json" hidden>
       </div>
     </div>
   </header>
+  <section class="panel" id="sync-panel" hidden aria-label="Gist sync">
+    <h2 style="margin:0 0 6px;font-size:1rem">Sync with a GitHub Gist</h2>
+    <div id="sync-setup">
+      <p class="hint" style="margin:0 0 8px">Paste a GitHub token that can edit your gists. Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> with the account permission <b>Gists: Read and write</b> (nothing else), or a <a href="https://github.com/settings/tokens/new?scopes=gist&description=Game%20Shelf" target="_blank" rel="noopener">classic token</a> with only the <b>gist</b> scope. The token is stored in this browser only, so use this on devices you trust.</p>
+      <div class="backup-row"><input type="password" id="sync-token" placeholder="GitHub token" autocomplete="off" spellcheck="false" style="flex:1;min-width:180px"><button type="button" class="btn sm primary" id="sync-save">Save token</button></div>
+    </div>
+    <div id="sync-ready" hidden>
+      <div class="backup-row">
+        <button type="button" class="btn sm primary" id="sync-push">Upload to Gist</button>
+        <button type="button" class="btn sm" id="sync-pull">Download from Gist</button>
+        <button type="button" class="btn sm danger" id="sync-forget">Forget token</button>
+      </div>
+      <p class="hint" style="margin:8px 0 0">Upload overwrites the Gist with this shelf. Download lets you add new games or replace this shelf.</p>
+    </div>
+    <p class="hint" id="sync-msg" role="status" style="margin:8px 0 0"></p>
+  </section>
   <section class="backup" aria-label="Backup" id="backup-status" hidden>
     <div class="backup-row" id="import-choice" hidden></div>
     <p class="hint" id="backup-msg" role="status" style="margin:0"></p>
@@ -1431,23 +1448,100 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     fr.onerror=function(){backupMsg("Couldn't read that file.",true)};
     fr.onload=function(){
       var d; try{d=JSON.parse(String(fr.result))}catch(e){backupMsg("That file isn't valid JSON.",true); return}
+      offerImport(d,file.name);
+    };
+    fr.readAsText(file);
+  });
+  function offerImport(d,label){
+    {
       var arr=Array.isArray(d)?d:(d&&Array.isArray(d.games)?d.games:null);
-      if(!arr){backupMsg("That file doesn't look like a Game Shelf export.",true); return}
+      if(!arr){backupMsg("That doesn't look like a Game Shelf export.",true); return}
       arr=arr.filter(function(g){return g&&typeof g==='object'&&typeof g.title==='string'&&g.title.trim()});
-      if(!arr.length){backupMsg('No games found in that file.',true); return}
+      if(!arr.length){backupMsg('No games found in '+label+'.',true); return}
       arr.forEach(function(g){if(!g.id||typeof g.id!=='string') g.id=uid()});
       pendingImportStatuses=validStatuses(d&&d.statuses);
       var have={}; games.forEach(function(g){have[g.id]=1});
       var fresh=arr.filter(function(g){return !have[g.id]}).length;
       pendingImport=arr;
-      backupMsg('Found '+arr.length+' games in '+file.name+' ('+fresh+' not on your shelf yet). Choose how to import:');
+      backupMsg('Found '+arr.length+' games in '+label+' ('+fresh+' not on your shelf yet). Choose how to import:');
       var box=$('import-choice');
       box.innerHTML='<button type="button" class="btn sm primary" data-imp="merge">Add the '+fresh+' new games</button>'+
         '<button type="button" class="btn sm danger" data-imp="replace">Replace my whole shelf</button>'+
         '<button type="button" class="btn sm" data-imp="cancel">Cancel</button>';
       box.hidden=false; $('backup-status').hidden=false;
-    };
-    fr.readAsText(file);
+    }
+  }
+  /* ---------- Gist sync (GitHub Pages version only) ---------- */
+  var GIST_KEY='gameshelf.gist', GIST_FILE='game-shelf.json', gist={token:'',id:''};
+  try{var gs=JSON.parse(localStorage.getItem(GIST_KEY)||'null'); if(gs&&typeof gs.token==='string') gist={token:gs.token,id:typeof gs.id==='string'?gs.id:''}}catch(e){}
+  function saveGist(){try{localStorage.setItem(GIST_KEY,JSON.stringify(gist))}catch(e){}}
+  function syncMsg(t,err){var m=$('sync-msg'); m.textContent=t; m.classList.toggle('err',!!err)}
+  function syncView(){$('sync-setup').hidden=!!gist.token; $('sync-ready').hidden=!gist.token}
+  function ghFetch(path,opt){
+    opt=opt||{};
+    return fetch('https://api.github.com'+path,{method:opt.method||'GET',headers:{'Authorization':'Bearer '+gist.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:opt.body?JSON.stringify(opt.body):undefined}).then(function(r){
+      if(r.ok) return r.json();
+      var e=new Error('http'+r.status); e.status=r.status;
+      if(r.status===403&&r.headers&&r.headers.get&&r.headers.get('x-ratelimit-remaining')==='0') e.status=429;
+      throw e;
+    },function(){var e=new Error('network'); e.status=0; throw e});
+  }
+  function ghErr(e){
+    if(e.status===0) return "Couldn't reach GitHub. Check your connection.";
+    if(e.status===401) return 'GitHub rejected the token. It may be wrong or expired. Forget it and paste a new one.';
+    if(e.status===403) return "The token doesn't have permission to use gists. It needs Gists: Read and write (fine-grained) or the gist scope (classic).";
+    if(e.status===404) return 'Gist not found. It may have been deleted.';
+    if(e.status===429) return 'GitHub rate limit reached. Try again in a few minutes.';
+    return 'GitHub returned an error ('+e.status+'). Try again.';
+  }
+  function findGist(){
+    if(gist.id) return Promise.resolve(gist.id);
+    return ghFetch('/gists?per_page=100').then(function(list){
+      var hit=(list||[]).filter(function(x){return x.files&&x.files[GIST_FILE]})[0];
+      if(hit){gist.id=hit.id; saveGist()}
+      return hit?hit.id:'';
+    });
+  }
+  function syncBusy(b){['sync-push','sync-pull','sync-save','sync-forget'].forEach(function(i){$(i).disabled=b})}
+  function gistPayload(){return {app:'game-shelf',v:1,exported:new Date().toISOString(),statuses:statusesForSave(),games:games.filter(function(g){return !g.sample})}}
+  $('btn-sync').hidden=!!window.claude;
+  $('btn-sync').addEventListener('click',function(){
+    var open=$('sync-panel').hidden; $('sync-panel').hidden=!open; this.setAttribute('aria-expanded',String(open));
+    if(open){syncView(); syncMsg(''); if(!gist.token) $('sync-token').focus()}
+  });
+  $('sync-save').addEventListener('click',function(){
+    var t=$('sync-token').value.trim(); if(!t){syncMsg('Paste a token first.',true); return}
+    gist={token:t,id:''}; $('sync-token').value=''; syncBusy(true); syncMsg('Checking token...');
+    findGist().then(function(id){
+      saveGist(); syncView();
+      syncMsg(id?'Connected. Found your Game Shelf gist. Use Download to load it, or Upload to overwrite it.':'Connected. No gist yet: Upload will create a private one.');
+    },function(e){gist={token:'',id:''}; saveGist(); syncView(); syncMsg(ghErr(e),true)}).then(function(){syncBusy(false)});
+  });
+  $('sync-forget').addEventListener('click',function(){gist={token:'',id:''}; try{localStorage.removeItem(GIST_KEY)}catch(e){} syncView(); syncMsg('Token forgotten. Your gist on GitHub is untouched.')});
+  $('sync-push').addEventListener('click',function(){
+    var n=gistPayload().games.length; syncBusy(true); syncMsg('Uploading...');
+    var body=function(){var o={}; o[GIST_FILE]={content:JSON.stringify(gistPayload(),null,2)}; return o};
+    findGist().then(function(id){
+      if(id) return ghFetch('/gists/'+id,{method:'PATCH',body:{files:body()}});
+      return ghFetch('/gists',{method:'POST',body:{description:'Game Shelf data',public:false,files:body()}}).then(function(r){gist.id=r.id; saveGist(); return r});
+    }).then(function(){syncMsg('Uploaded '+n+' games at '+new Date().toLocaleTimeString()+'.')},function(e){
+      if(e.status===404&&gist.id){gist.id=''; saveGist(); syncMsg('The old gist is gone. Press Upload again to create a new one.',true)} else syncMsg(ghErr(e),true);
+    }).then(function(){syncBusy(false)});
+  });
+  $('sync-pull').addEventListener('click',function(){
+    syncBusy(true); syncMsg('Downloading...');
+    findGist().then(function(id){
+      if(!id){syncMsg('No Game Shelf gist found yet. Upload first.',true); return}
+      return ghFetch('/gists/'+id).then(function(r){
+        var fl=r.files&&r.files[GIST_FILE]; if(!fl){syncMsg('That gist has no '+GIST_FILE+' file.',true); return}
+        var go=function(txt){
+          var d; try{d=JSON.parse(txt)}catch(e){syncMsg("The gist's data isn't valid JSON.",true); return}
+          syncMsg(''); offerImport(d,'your gist');
+        };
+        if(fl.truncated&&fl.raw_url) return fetch(fl.raw_url).then(function(x){return x.text()}).then(go);
+        go(fl.content||'');
+      });
+    }).catch(function(e){syncMsg(ghErr(e),true)}).then(function(){syncBusy(false)});
   });
   $('import-choice').addEventListener('click',function(e){
     var b=e.target.closest('[data-imp]'); if(!b||!pendingImport) return;
@@ -1528,5 +1622,4 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 })();
 </script>
 
-</body>
-</html>
+</body></html>
