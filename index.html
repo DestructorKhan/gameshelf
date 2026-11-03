@@ -514,7 +514,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   }
   normalizeGames(games);
   var f={q:'',status:new Set(),platforms:new Set(),tags:new Set(),mode:'any',pmode:'any',sort:'added'};
-  var openId=null, confirmDel=null, showAllTags=false;
+  var openId=null, confirmDel=null, showAllTags=false, frozenOrder=null;
   var TAG_CAP=2, tagsExpanded={}, expandedRows={};
   var nestPref={};
   var ui={filters:false,status:false,platforms:false,tags:false,view:'list',uv:4};
@@ -716,6 +716,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   function find(id){return games.filter(function(g){return g.id===id})[0]}
 
   function matches(g){
+    if(openId&&g.id===openId) return true; /* the game being edited stays visible until Done */
     var sel=Array.from(f.tags);
     if(f.q){var h=(g.title+' '+(g.platforms||[]).join(' ')+' '+(g.notes||'')+' '+g.tags.join(' ')).toLowerCase(); if(h.indexOf(f.q)<0) return false}
     if(f.status.size&&!statusesOf(g).some(function(x){return f.status.has(x)})) return false;
@@ -754,7 +755,12 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   /* Games inside a bundle are nested under it. A bundle row shows when it matches the filters or any game inside it does. */
   function buildTree(){
     var cmp=sorter(), rows=[], matched=0;
-    games.filter(function(g){return !parentOf(g)}).sort(cmp).forEach(function(g){
+    var top=games.filter(function(g){return !parentOf(g)}).sort(cmp);
+    if(openId&&frozenOrder){ /* keep the order from when editing started */
+      var pos=function(g){var i=frozenOrder.indexOf(g.id); return i<0?1e9:i};
+      top=top.map(function(g,i){return {g:g,i:i}}).sort(function(a,b){return pos(a.g)-pos(b.g)||a.i-b.i}).map(function(x){return x.g});
+    }
+    top.forEach(function(g){
       var kids=g.isBundle?orderedMembers(g):[], hit=kids.filter(matches), self=matches(g);
       matched+=(self?1:0)+hit.length;
       if(self||hit.length) rows.push({g:g,kids:kids,hit:hit});
@@ -1281,6 +1287,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     if(act==='tag'){tagClick(b.dataset.tag); return}
     if(act==='toggle'){
       var closing=openId===g.id;
+      if(!closing){openId=null; frozenOrder=buildTree().rows.map(function(x){return x.g.id})} else frozenOrder=null;
       openId=closing?null:g.id; confirmDel=null; renderList();
       if(closing){var row=list.querySelector('li.game[data-id="'+g.id+'"]'); if(row) row.scrollIntoView({block:'start'})}
       return;
@@ -1329,7 +1336,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     if(act==='delete-no'){confirmDel=null; renderList(); return}
     if(act==='delete-yes'){
       games.forEach(function(x){if(x.bundleId===g.id) x.bundleId=null});
-      games=games.filter(function(x){return x.id!==g.id}); openId=null; confirmDel=null;
+      games=games.filter(function(x){return x.id!==g.id}); openId=null; frozenOrder=null; confirmDel=null;
       persist(); render();
     }
   });
@@ -1577,7 +1584,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       games=games.concat(add);
       backupMsg('Added '+add.length+' games.');
     }else{
-      games=arr; openId=null; confirmDel=null;
+      games=arr; openId=null; frozenOrder=null; confirmDel=null;
       backupMsg('Replaced your shelf with '+arr.length+' games.');
     }
     clearImport(); f.tags.clear(); f.status.clear(); f.platforms.clear(); persist(); render(); renderAddStatus();
