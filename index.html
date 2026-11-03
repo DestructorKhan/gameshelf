@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Game Shelf</title>
 <meta name="description" content="A personal video game tracker.">
 <meta name="theme-color" content="#2F49E6">
@@ -78,6 +78,12 @@ button,input,select,textarea{font:inherit; color:inherit}
 .top{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap}
 .top h1{font-size:34px; line-height:1; font-weight:700; letter-spacing:-.01em}
 .sub{margin:8px 0 0; font:400 13px var(--font-mono); color:var(--muted); font-variant-numeric:tabular-nums}
+.btn.fab{position:fixed; left:50%; margin-left:-28px; bottom:max(16px,env(safe-area-inset-bottom)); width:56px; height:56px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.3); z-index:50}
+.btn.fab[aria-expanded="true"]{display:none}
+.btn.ok{color:#1f8a4c; border-color:#1f8a4c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.ok{color:#6FD197; border-color:#6FD197}}
+:root[data-theme="dark"] .btn.ok{color:#6FD197; border-color:#6FD197}
+body{padding-bottom:84px}
 .top-actions{display:flex; flex-direction:row; flex-wrap:wrap; align-items:center; gap:8px}
 
 /* buttons + fields */
@@ -285,7 +291,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       <p class="sub" id="sub"></p>
     </div>
     <div class="top-actions">
-      <button class="btn primary" id="btn-add" type="button" aria-expanded="false">Add game</button>
+      <button class="btn primary fab" id="btn-add" type="button" aria-expanded="false" aria-label="Add game" title="Add game"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <div class="backup-row">
         <button type="button" class="btn sm" id="btn-export">Export JSON</button>
         <button type="button" class="btn sm" id="btn-import">Import JSON</button>
@@ -321,7 +327,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   </div>
 
   <section class="panel" id="add" hidden aria-labelledby="add-h">
-    <div class="add-head"><h2 id="add-h">Add a game</h2><span class="add-actions"><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span></div>
+    <div class="add-head"><h2 id="add-h">Add a game</h2><span class="add-actions"><button type="submit" form="add-form" class="btn ok x-btn" aria-label="Add this game" title="Add game"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span></div>
     <form id="add-form" class="grid" autocomplete="off">
       <div style="grid-column:1/-1; display:flex; flex-direction:column; gap:6px">
         <label><span>Title</span><input name="title" id="f-title" required autocomplete="off"></label>
@@ -351,9 +357,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       </div>
       <label style="grid-column:1/-1"><span>Notes</span><textarea name="notes" id="f-notes" placeholder="Why you want to play it, who recommended it, where you left off"></textarea></label>
       <div class="add-foot" style="grid-column:1/-1">
-        <button type="submit" form="add-form" class="btn primary lg">Add Game</button>
         <span class="hint" id="add-msg" role="status"></span>
-        <span class="add-actions"><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span>
+        <span class="add-actions"><button type="submit" form="add-form" class="btn ok x-btn" aria-label="Add this game" title="Add game"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span>
       </div>
     </form>
   </section>
@@ -484,6 +489,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     var v=null; try{v=validStatuses(JSON.parse(localStorage.getItem(STATUS_KEY)||'null'))}catch(e){}
     applyStatuses(v||DEFAULT_STATUSES.map(function(x){return {id:x.id,label:x.label}}));
   })();
+  function addDefault(){return STATUSES.some(function(x){return x.id==='wishlist'})?'wishlist':defaultStatus()}
   function defaultStatus(){return STATUSES.some(function(x){return x.id==='backlog'})?'backlog':STATUSES[0].id}
   var KEY='gameshelf.v1';
   var $=function(id){return document.getElementById(id)};
@@ -1092,7 +1098,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   function refreshStatusUi(){
     var ids=STATUSES.map(function(x){return x.id});
     Array.from(f.status).forEach(function(x){if(ids.indexOf(x)<0) f.status.delete(x)});
-    draftStatuses=draftStatuses.filter(function(x){return ids.indexOf(x)>=0}); if(!draftStatuses.length) draftStatuses=[defaultStatus()];
+    draftStatuses=draftStatuses.filter(function(x){return ids.indexOf(x)>=0}); if(!draftStatuses.length) draftStatuses=[addDefault()];
     games.forEach(function(g){setStatuses(g,statusesOf(g))});
     persist(); render(); renderAddStatus();
   }
@@ -1409,8 +1415,21 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 
   /* ---------- panels ---------- */
   function setPanel(id,btn,open){$(id).hidden=!open; $(btn).setAttribute('aria-expanded',String(open))}
+  /* Keep the floating Add Game button just above the on-screen keyboard: place it from the visual viewport's bottom edge. */
+  var floatBtn=document.querySelector('#add .add-float');
+  function placeFloat(){
+    var vv=window.visualViewport; if(!floatBtn||!vv||$('add').hidden) return;
+    var h=floatBtn.offsetHeight||48, top=vv.offsetTop+vv.height-h-16;
+    floatBtn.style.bottom='auto'; floatBtn.style.top=Math.max(0,Math.round(top))+'px';
+  }
+  function placeFloatSoon(){placeFloat(); setTimeout(placeFloat,120); setTimeout(placeFloat,350); setTimeout(placeFloat,700)}
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize',placeFloat); visualViewport.addEventListener('scroll',placeFloat);
+  }
+  window.addEventListener('scroll',placeFloat,{passive:true}); window.addEventListener('resize',placeFloatSoon);
+  document.addEventListener('focusin',placeFloatSoon); document.addEventListener('focusout',placeFloatSoon);
   $('btn-add').addEventListener('click',function(){
-    var open=$('add').hidden; setPanel('add','btn-add',open); if(open) $('f-title').focus()
+    var open=$('add').hidden; setPanel('add','btn-add',open); if(open){$('add').scrollIntoView({block:'start'}); $('f-title').focus({preventScroll:true}); placeFloatSoon()}
   });
   $('btn-clear-examples').addEventListener('click',function(){
     games=games.filter(function(g){return !g.sample}); f.tags.clear(); f.status.clear(); f.platforms.clear(); persist(); render();
@@ -1564,9 +1583,9 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     clearImport(); f.tags.clear(); f.status.clear(); f.platforms.clear(); persist(); render(); renderAddStatus();
   });
 
-  var draftStatuses=[defaultStatus()];
+  var draftStatuses=[addDefault()];
   document.querySelectorAll('[data-add-discard]').forEach(function(btn){btn.addEventListener('click',function(){
-    $('add-form').reset(); draftPlatforms=[]; draftMembers.clear(); draftStatuses=[defaultStatus()];
+    $('add-form').reset(); draftPlatforms=[]; draftMembers.clear(); draftStatuses=[addDefault()];
     $('add-msg').textContent=''; syncBackloggdLink(); renderAddStatus(); render();
     setPanel('add','btn-add',false); $('btn-add').focus();
   })});
@@ -1599,7 +1618,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     addDraftPlatform($('f-plat-search').value);
     var plats=draftPlatforms.slice(); draftPlatforms=[];
     var ng={
-      id:uid(), title:title, status:defaultStatus(), platforms:plats,
+      id:uid(), title:title, status:addDefault(), platforms:plats,
       year:parseInt(fd.get('year'),10)||parseInt(tt.year,10)||null, started:started, finished:finished, tags:parseTags(fd.get('tags')), rating:0, notes:String(fd.get('notes')||'').trim(), added:Date.now(), source:'manual'
     };
     if(fd.get('isBundle')){
@@ -1610,7 +1629,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     setStatuses(ng,draftStatuses);
     draftMembers.clear();
     games.unshift(ng);
-    persist(); this.reset(); draftStatuses=[defaultStatus()]; renderAddStatus();
+    persist(); this.reset(); draftStatuses=[addDefault()]; renderAddStatus();
     m.textContent=''; syncBackloggdLink(); render();
     setPanel('add','btn-add',false); $('btn-add').focus();
     backupMsg('Added '+title+'.'); clearTimeout(addMsgTimer); addMsgTimer=setTimeout(function(){backupMsg('')},3500);
