@@ -81,7 +81,7 @@ button,input,select,textarea{font:inherit; color:inherit}
 .btn.fab{position:fixed; left:50%; margin-left:-28px; bottom:max(16px,env(safe-area-inset-bottom)); width:56px; height:56px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.3); z-index:50}
 .btn.fab[aria-expanded="true"]{display:none}
 .btn.totop{position:fixed; left:max(36px,env(safe-area-inset-left)); bottom:calc(max(16px,env(safe-area-inset-bottom)) + 17px); width:22px; height:22px; opacity:.5; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent); border-color:var(--accent); color:var(--on-accent); box-shadow:0 4px 14px rgba(0,0,0,.3); z-index:55}
-#add{position:fixed; z-index:80; left:50%; top:12px; transform:translateX(-50%); width:min(860px,calc(100vw - 24px)); max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; box-shadow:0 0 0 100vmax rgba(0,0,0,.5), 0 10px 40px rgba(0,0,0,.4)}
+#add,#bulk{position:fixed; z-index:80; left:50%; top:12px; transform:translateX(-50%); width:min(860px,calc(100vw - 24px)); max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; box-shadow:0 0 0 100vmax rgba(0,0,0,.5), 0 10px 40px rgba(0,0,0,.4)}
 .g-title{touch-action:manipulation; -webkit-user-select:none; user-select:none}
 .app{position:relative}
 .btn.settings-btn{position:absolute; top:0; right:0; z-index:5}
@@ -90,6 +90,17 @@ button,input,select,textarea{font:inherit; color:inherit}
 .swatches{display:flex; flex-wrap:wrap; gap:10px}
 .swatch{width:36px; height:36px; border-radius:50%; border:2px solid var(--line); background:var(--sw); padding:0; position:relative}
 .swatch[aria-pressed="true"]{border-color:var(--ink); box-shadow:0 0 0 2px var(--surface) inset}
+.selbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font:500 13px var(--font-mono); color:var(--muted)}
+.selbar span{margin-right:auto}
+#list li.game{position:relative}
+#list.selmode li.game>.g-main{padding-left:38px; cursor:pointer}
+.sel-box{position:absolute; left:10px; top:12px; width:20px; height:20px; border:2px solid var(--muted); border-radius:5px; background:var(--surface); display:grid; place-items:center; color:var(--on-accent); z-index:1}
+li.game.sel>.g-main{background:var(--accent-soft)}
+li.game.sel>.sel-box{background:var(--accent); border-color:var(--accent)}
+.sel-box svg{display:none}
+li.game.sel>.sel-box svg{display:block}
+.bulk-sec{display:flex; flex-direction:column; gap:8px}
+.bulk-sec .taghead{flex-wrap:wrap}
 /* widgets */
 .widgets{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
 .widget{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; min-width:0}
@@ -109,8 +120,9 @@ button,input,select,textarea{font:inherit; color:inherit}
 .w-list .w-m{font:400 11px var(--font-mono); color:var(--muted)}
 .w-empty{margin:0; font-size:12.5px; color:var(--muted)}
 [data-sec][hidden],[data-nest][hidden],[data-more-sec][hidden],.add-sec[hidden],.adders[hidden]{display:none!important}
-.adders{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:8px}
-.add-sec{color:var(--accent); border-style:dashed; padding:6px 12px}
+.adders{grid-column:1/-1; display:flex; flex-direction:column; align-items:flex-start; gap:8px}
+.add-sec{color:var(--accent); border-style:dashed; padding:6px 12px; align-self:flex-start; justify-self:start}
+.grid>.add-sec{grid-column:1/-1}
 .btn.ok{color:#1f8a4c; border-color:#1f8a4c}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.ok{color:#6FD197; border-color:#6FD197}}
 :root[data-theme="dark"] .btn.ok{color:#6FD197; border-color:#6FD197}
@@ -384,26 +396,24 @@ li.game .editor{padding:18px}
         </div>
       </div>
       <label><span>Year</span><input name="year" id="f-year" inputmode="numeric" placeholder="2019"></label>
-      <div class="adders" id="f-adders">
-        <button type="button" class="btn sm add-sec" data-areveal="status">+ Add Status</button>
-        <button type="button" class="btn sm add-sec" data-areveal="dates">+ Add Dates</button>
-        <button type="button" class="btn sm add-sec" data-areveal="plats">+ Add Platforms</button>
-        <button type="button" class="btn sm add-sec" data-areveal="tags">+ Add Tags</button>
-        <button type="button" class="btn sm add-sec" data-areveal="notes">+ Add Notes</button>
-      </div>
+      <button type="button" class="btn sm add-sec" data-areveal="status">+ Add Status</button>
       <div data-sec="status" hidden style="grid-column:1/-1; display:flex; flex-direction:column; gap:6px"><span class="fieldlabel">Status, pick any that apply</span><div class="status-row" id="f-status" role="group" aria-label="Status"></div></div>
+      <button type="button" class="btn sm add-sec" data-areveal="dates">+ Add Dates</button>
       <label data-sec="dates" hidden><span>Started</span><input type="date" name="started" id="f-started"></label>
       <label data-sec="dates" hidden><span>Finished</span><input type="date" name="finished" id="f-finished"></label>
+      <button type="button" class="btn sm add-sec" data-areveal="plats">+ Add Platforms</button>
       <div data-sec="plats" hidden style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
         <span class="fieldlabel">Platforms</span>
         <div class="tags" id="f-plat-chosen" aria-label="Chosen platforms"></div>
-        <label><span>Search or add a platform</span><input type="search" id="f-plat-search" placeholder="Type to search, e.g. Switch" autocomplete="off"></label>
-        <ul class="mem-results" id="f-plat-results" hidden></ul>
+        <label><span>Filter or add a platform</span><input type="search" id="f-plat-search" placeholder="Type to search, e.g. Switch" autocomplete="off"></label>
+        <div class="tags pick" id="f-plat-results" aria-label="Platforms"></div>
       </div>
+      <button type="button" class="btn sm add-sec" data-areveal="tags">+ Add Tags</button>
       <div data-sec="tags" hidden style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
-        <label><span>Tags</span><input name="tags" id="f-tags" list="taglist" placeholder="Tap a tag below, or type new ones separated by commas"></label>
+        <label><span>Filter or add a tag</span><input name="tags" id="f-tags" placeholder="Type to filter, tap a tag below, or add new ones with commas" autocomplete="off"></label>
         <div class="tags pick" id="f-tagpick" role="group" aria-label="Existing tags"></div>
       </div>
+      <button type="button" class="btn sm add-sec" data-areveal="notes">+ Add Notes</button>
       <label data-sec="notes" hidden style="grid-column:1/-1"><span>Notes</span><textarea name="notes" id="f-notes" placeholder="Why you want to play it, who recommended it, where you left off"></textarea></label>
       <div class="add-foot" style="grid-column:1/-1">
         <span class="hint" id="add-msg" role="status"></span>
@@ -488,10 +498,13 @@ li.game .editor{padding:18px}
         <option value="started">Recently started</option>
         <option value="finished">Recently finished</option>
       </select>
+      <button type="button" class="btn" id="btn-select" aria-pressed="false">Select</button>
       <input id="q" type="search" placeholder="Search title, platform, tag or note" aria-label="Search your games" autocomplete="off" hidden>
     </div>
+    <div class="selbar" id="selbar" hidden><span id="sel-count" role="status"></span><button type="button" class="btn sm" id="sel-all">Select all shown</button><button type="button" class="btn sm" id="sel-clear">Clear</button></div>
   </section>
 
+  <section class="panel" id="bulk" hidden role="dialog" aria-label="Edit selected games"></section>
   <button type="button" class="btn totop" id="to-top" aria-label="Back to top" title="Back to top" hidden><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
   <section class="widgets" id="widgets" aria-label="Widgets"></section>
   <ul class="list" id="list"></ul>
@@ -713,23 +726,19 @@ li.game .editor{padding:18px}
   /* Only matches are shown, never the whole list. A typed name that matches nothing exactly is offered as a new platform. */
   function platformResults(q,chosen){
     q=String(q||'').trim();
-    if(!q){
-      var have0=chosen.map(lower), rest=allPlatforms().filter(function(p){return have0.indexOf(lower(p))<0}).sort(function(a,b){return a.localeCompare(b)});
-      return {hits:rest.slice(0,12),addNew:null};
-    }
     var lc=lower(q), have=chosen.map(lower), all=allPlatforms();
-    var hits=all.filter(function(p){return have.indexOf(lower(p))<0&&lower(p).indexOf(lc)>=0}).sort(function(a,b){
-      var ap=lower(a).indexOf(lc)===0?0:1, bp=lower(b).indexOf(lc)===0?0:1;
-      return ap-bp||a.localeCompare(b);
-    }).slice(0,6);
-    var exact=have.indexOf(lc)>=0||all.some(function(p){return lower(p)===lc});
+    var hits=all.filter(function(p){return have.indexOf(lower(p))<0&&(!lc||lower(p).indexOf(lc)>=0)}).sort(function(a,b){
+      var ap=lc&&lower(a).indexOf(lc)===0?0:1, bp=lc&&lower(b).indexOf(lc)===0?0:1;
+      return ap-bp||a.localeCompare(b,undefined,{sensitivity:'base'});
+    });
+    var exact=!lc||have.indexOf(lc)>=0||all.some(function(p){return lower(p)===lc});
     return {hits:hits,addNew:exact?null:canonPlatform(q)};
   }
   function platResultsHTML(r,attr){
     if(r===null) return '';
-    var h=r.hits.map(function(p){return '<li><button type="button" '+attr+' data-p="'+esc(p)+'">'+esc(p)+'</button></li>'}).join('');
-    if(r.addNew) h+='<li><button type="button" '+attr+' data-p="'+esc(r.addNew)+'">Add &ldquo;'+esc(r.addNew)+'&rdquo;<small>new platform</small></button></li>';
-    return h||'<li class="none">Already added</li>';
+    var h=r.hits.map(function(p){return '<button type="button" class="tag plain" '+attr+' data-p="'+esc(p)+'">'+esc(p)+'</button>'}).join('');
+    if(r.addNew) h+='<button type="button" class="tag more plain" '+attr+' data-p="'+esc(r.addNew)+'">+ Add &ldquo;'+esc(r.addNew)+'&rdquo;</button>';
+    return h;
   }
   function parentOf(g){var p=g.bundleId?find(g.bundleId):null; return p&&p.isBundle?p:null}
   function eligible(excludeId){return games.filter(function(g){return !g.isBundle&&!parentOf(g)&&g.id!==excludeId}).sort(byTitle)}
@@ -817,7 +826,7 @@ li.game .editor{padding:18px}
   function renderSub(){
     var n=function(s){return games.filter(function(g){return hasStatus(g,s)}).length};
     var playedN=games.filter(function(g){return ['playing','finish','played','completed','full','dropped'].some(function(x){return hasStatus(g,x)})}).length;
-    $('sub').textContent=games.length+' games  /  '+playedN+' played  /  '+n('playing')+' playing';
+    $('sub').textContent=games.length+(games.length===1?' game':' games');
   }
   function renderStatus(){
     var counts={}; games.forEach(function(g){statusesOf(g).forEach(function(x){counts[x]=(counts[x]||0)+1})});
@@ -882,6 +891,13 @@ li.game .editor{padding:18px}
     $('taglist').innerHTML=all.map(function(e){return '<option value="'+esc(e[0])+'">'}).join('');
     renderToggles();
   }
+  function tagPickHTML(g,q){
+    q=String(q||'').trim(); var lc=lower(q), all=allTagsAlpha().map(function(e){return e[0]});
+    var hits=all.filter(function(t){return g.tags.indexOf(t)<0&&(!lc||lower(t).indexOf(lc)>=0)});
+    var exact=!lc||g.tags.map(lower).indexOf(lc)>=0||all.some(function(t){return lower(t)===lc});
+    return hits.map(function(t){return '<button type="button" class="tag" data-act="addtag" data-tag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+
+      (exact?'':'<button type="button" class="tag more" data-act="addtag" data-tag="'+esc(canonTag(q))+'">+ Add &ldquo;'+esc(canonTag(q))+'&rdquo;</button>');
+  }
   function editorHTML(g){
     var sh=secShown[g.id]||(secShown[g.id]={});
     if(statusesOf(g).length) sh.status=true;
@@ -898,15 +914,12 @@ li.game .editor{padding:18px}
     if(!statusesOf(g).length) sh.statusMore=true;
     if(!(g.platforms||[]).length) sh.platsMore=true;
     var hid=function(k){return sh[k]?'':' hidden'};
-    var ADD=[['status','+ Add Status'],['dates','+ Add Dates'],['rating','+ Add Rating'],['plats','+ Add Platforms'],['tags','+ Add Tags'],['notes','+ Add Notes']].filter(function(x){return !sh[x[0]]});
-    var adders='<div class="adders"'+(ADD.length?'':' hidden')+'>'+ADD.map(function(x){return '<button type="button" class="btn sm add-sec" data-act="reveal" data-sec-name="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>';
+    var slot=function(k,label){return '<button type="button" class="btn sm add-sec" data-act="reveal" data-sec-name="'+k+'"'+(sh[k]?' hidden':'')+'>'+label+'</button>'};
     var rate=[1,2,3,4,5].map(function(v){return '<button type="button" data-act="rate" data-v="'+v+'" aria-pressed="'+(v<=(g.rating||0))+'" aria-label="'+v+(v===1?' star':' stars')+'">&#9733;</button>'}).join('');
     var chips=sortedTags(g).map(function(t){return '<span class="tag">'+esc(t)+'<button type="button" class="x" data-act="untag" data-tag="'+esc(t)+'" aria-label="Remove tag '+esc(t)+'">&times;</button></span>'}).join('');
     var avail=allTags().map(function(e){return e[0]}).filter(function(t){return g.tags.indexOf(t)<0})
       .sort(function(a,b){return a.localeCompare(b,undefined,{sensitivity:'base'})});
-    var pick=avail.length
-      ? '<span class="fieldlabel">Tap to add</span><div class="tags pick">'+avail.map(function(t){return '<button type="button" class="tag" data-act="addtag" data-tag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'
-      : '';
+    var pick='<span class="fieldlabel">Tap to add</span><div class="tags pick" data-tag-list>'+tagPickHTML(g,'')+'</div>';
     var parent=parentOf(g), inner='';
     if(parent) inner+='<p class="hint">Part of <strong>'+esc(parent.title)+'</strong> <button type="button" class="btn sm" data-act="leave">Remove from bundle</button></p>';
     if(g.isBundle){
@@ -921,7 +934,7 @@ li.game .editor{padding:18px}
     }
     var bundleSection='<div class="editor-tags"><label class="check"><input type="checkbox" data-f="isBundle"'+(g.isBundle?' checked':'')+'><span>This game is a bundle</span></label>'+inner+'</div>';
     var plats=(g.platforms||[]).map(function(p){return '<span class="tag plain">'+esc(p)+'<button type="button" class="x" data-act="unplat" data-p="'+esc(p)+'" aria-label="Remove platform '+esc(p)+'">&times;</button></span>'}).join('');
-    var platPicker='<div class="editor-tags" data-sec="plats"'+hid('plats')+'>'+nestHead('plats','Platforms'+(ptN?' ('+ptN+')':''))+'<div class="tags">'+plats+(sh.platsMore?'':'<button type="button" class="tag more" data-act="revealmore" data-more="plats">+ Add more platforms</button>')+'</div><div class="editor-tags" data-more-sec="plats"'+(sh.platsMore?'':' hidden')+'><label><span>Search or add a platform</span><input type="search" data-f="platsearch" placeholder="Type to search, e.g. Switch" autocomplete="off"></label><ul class="mem-results" hidden></ul></div></div></div>';
+    var platPicker=slot('plats','+ Add Platforms')+'<div class="editor-tags" data-sec="plats"'+hid('plats')+'>'+nestHead('plats','Platforms'+(ptN?' ('+ptN+')':''))+'<div class="tags">'+plats+(sh.platsMore?'':'<button type="button" class="tag more" data-act="revealmore" data-more="plats">+ Add more platforms</button>')+'</div><div class="editor-tags" data-more-sec="plats"'+(sh.platsMore?'':' hidden')+'><label><span>Filter or add a platform</span><input type="search" data-f="platsearch" placeholder="Type to filter or add a platform, press Enter to add" autocomplete="off"></label><div class="tags pick" data-plat-list>'+platResultsHTML(platformResults('',g.platforms||[]),'data-act="addplat"')+'</div></div></div></div>';
     var del=confirmDel===g.id
       ? '<span class="hint">Delete this game?</span><button type="button" class="btn sm danger" data-act="delete-yes">Yes, delete</button><button type="button" class="btn sm" data-act="delete-no">Keep it</button>'
       : '<button type="button" class="btn sm danger" data-act="delete">Delete game</button>';
@@ -931,16 +944,19 @@ li.game .editor{padding:18px}
           '<a class="ext-link" data-bl-edit target="_blank" rel="noopener noreferrer" href="'+esc(backloggdUrl(g.title))+'">Search Backloggd for this title</a></div>'+
         '<div style="grid-column:1/-1">'+bundleSection+'</div>'+
         '<label><span>Year</span><input data-f="year" inputmode="numeric" value="'+esc(g.year||'')+'"></label>'+
-        adders+
+        slot('status','+ Add Status')+
         '<div class="editor-tags" data-sec="status"'+hid('status')+' style="grid-column:1/-1">'+nestHead('status','Status'+(stN?' ('+stN+')':''))+'<div class="status-row" role="group" aria-label="Status">'+statusChipsHTML(statusesOf(g),'data-sts',!sh.statusMore)+(sh.statusMore?'':'<button type="button" class="schip more" data-act="revealmore" data-more="status">+ Add more statuses</button>')+'</div></div></div>'+
+        slot('dates','+ Add Dates')+
         '<div data-sec="dates"'+hid('dates')+' style="grid-column:1/-1">'+nestHead('dates','Dates'+(has.dates?' ('+[fmtDate(g.started)&&'started',fmtDate(g.finished)&&'finished'].filter(Boolean).join(', ')+')':''),'display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px')+'<label><span>Started</span><input type="date" data-f="started" value="'+esc(g.started||'')+'"></label>'+
         '<label><span>Finished</span><input type="date" data-f="finished" value="'+esc(g.finished||'')+'"></label>'+
         '<p class="hint err date-warn" style="grid-column:1/-1;margin:0"'+(datesBad(g)?'':' hidden')+'>The finish date is before the start date.</p></div></div>'+
-        '<div data-sec="rating"'+hid('rating')+' style="display:flex;flex-direction:column;gap:5px">'+nestHead('rating','Rating'+(g.rating?' ('+g.rating+'/5)':''))+'<div class="rate" role="group" aria-label="Rating">'+rate+'</div></div></div>'+
       '</div>'+
       platPicker+
-      '<div class="editor-tags" data-sec="tags"'+hid('tags')+'>'+nestHead('tags','Tags'+(g.tags.length?' ('+g.tags.length+')':''))+'<div class="tags">'+chips+(sh.tagsMore?'':'<button type="button" class="tag more" data-act="revealmore" data-more="tags">+ Add more tags</button>')+'</div><div class="editor-tags" data-more-sec="tags"'+(sh.tagsMore?'':' hidden')+'>'+pick+
-        '<input data-f="newtag" list="taglist" placeholder="Add a tag and press Enter" aria-label="Add a tag"></div></div></div>'+
+      slot('rating','+ Add Rating')+
+      '<div data-sec="rating"'+hid('rating')+' style="display:flex;flex-direction:column;gap:5px">'+nestHead('rating','Rating'+(g.rating?' ('+g.rating+'/5)':''))+'<div class="rate" role="group" aria-label="Rating">'+rate+'</div></div></div>'+
+      slot('tags','+ Add Tags')+
+      '<div class="editor-tags" data-sec="tags"'+hid('tags')+'>'+nestHead('tags','Tags'+(g.tags.length?' ('+g.tags.length+')':''))+'<div class="tags">'+chips+(sh.tagsMore?'':'<button type="button" class="tag more" data-act="revealmore" data-more="tags">+ Add more tags</button>')+'</div><div class="editor-tags" data-more-sec="tags"'+(sh.tagsMore?'':' hidden')+'><label><span>Filter or add a tag</span><input data-f="newtag" placeholder="Type to filter or add a tag, press Enter to add" autocomplete="off"></label>'+pick+'</div></div></div>'+
+      slot('notes','+ Add Notes')+
       '<label data-sec="notes"'+hid('notes')+'><span>Notes</span><textarea data-f="notes">'+esc(g.notes||'')+'</textarea></label>'+
       '<div class="editor-actions">'+del+'<span class="spacer"></span><span class="add-actions"><button type="button" class="btn ok x-btn" data-act="save" aria-label="Save changes" title="Save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button><button type="button" class="btn danger x-btn" data-act="discard" aria-label="Discard changes" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span></div>'+
     '</div>';
@@ -968,7 +984,7 @@ li.game .editor{padding:18px}
       }
     }
     var exp=open||!!expandedRows[g.id];
-    return '<li class="game'+(nested?' nested-game':'')+(exp?'':' collapsed')+'" data-id="'+g.id+'">'+
+    return '<li class="game'+(nested?' nested-game':'')+(exp?'':' collapsed')+(selectMode&&sel.has(g.id)?' sel':'')+'" data-id="'+g.id+'">'+(selectMode?'<span class="sel-box" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></span>':'')+
       '<div class="g-main">'+
         '<div class="g-info">'+
           '<h3 class="g-title"><span class="tg"><button type="button" class="row-chev" data-act="expand" aria-expanded="'+exp+'" aria-label="'+(exp?'Hide':'Show')+' details for '+esc(g.title)+'"><span class="chev" aria-hidden="true"></span></button><span class="t">'+esc(g.title)+'</span></span>'+(meta?'<span class="g-sub">'+meta+'</span>':'')+(g.sample?'<span class="eg">Example</span>':'')+'</h3>'+
@@ -999,14 +1015,18 @@ li.game .editor{padding:18px}
     }
     $('resultline').textContent='';
     $('resultbar').hidden=!active;
-    renderWidgets();
+    $('list').classList.toggle('selmode',selectMode);
+    renderWidgets(); renderSelUI();
   }
   function renderBanner(){$('banner').hidden=!games.some(function(g){return g.sample})}
+  function tagFragment(){return $('f-tags').value.split(',').pop().trim()}
   function renderPick(){
-    var cur=parseTags($('f-tags').value);
-    $('f-tagpick').innerHTML=allTagsAlpha().map(function(e){
-      return '<button type="button" class="tag" data-tag="'+esc(e[0])+'" aria-pressed="'+(cur.indexOf(e[0])>=0)+'">'+esc(e[0])+'</button>';
-    }).join('');
+    var cur=parseTags($('f-tags').value), frag=tagFragment(), lc=lower(frag), all=allTagsAlpha().map(function(e){return e[0]});
+    var hits=all.filter(function(t){return !lc||lower(t).indexOf(lc)>=0});
+    var exact=!lc||all.some(function(t){return lower(t)===lc});
+    $('f-tagpick').innerHTML=hits.map(function(t){
+      return '<button type="button" class="tag" data-tag="'+esc(t)+'" aria-pressed="'+(cur.indexOf(t)>=0)+'">'+esc(t)+'</button>';
+    }).join('')+(exact?'':'<button type="button" class="tag more" data-tag="'+esc(canonTag(frag))+'">+ Add &ldquo;'+esc(canonTag(frag))+'&rdquo;</button>');
   }
   var draftMembers=new Set();
   function renderBundleResults(){
@@ -1024,9 +1044,7 @@ li.game .editor{padding:18px}
   }
   var draftPlatforms=[];
   function renderPlatResults(){
-    var inp=$('f-plat-search'), focused=document.activeElement===inp;
-    var r=(inp.value.trim()||focused)?platformResults(inp.value,draftPlatforms):null, box=$('f-plat-results');
-    box.innerHTML=platResultsHTML(r,'data-pick="1"'); box.hidden=r===null;
+    $('f-plat-results').innerHTML=platResultsHTML(platformResults($('f-plat-search').value,draftPlatforms),'data-pick="1"');
   }
   function renderPlatDraft(){
     $('f-plat-chosen').innerHTML=draftPlatforms.map(function(p){
@@ -1117,14 +1135,11 @@ li.game .editor{padding:18px}
   $('widgets').addEventListener('focusout',function(e){if(e.target.matches&&e.target.matches('[data-wname]')) setTimeout(renderWidgets,0)});
   function render(){renderSub(); renderStatus(); renderPlatforms(); renderTags(); renderPick(); renderBundlePick(); renderPlatDraft(); renderList(); renderBanner(); renderManager(); renderPlatManager(); renderStatusManager()}
   $('f-plat-search').addEventListener('input',renderPlatResults);
-  $('f-plat-search').addEventListener('focus',renderPlatResults);
-  $('f-plat-search').addEventListener('click',renderPlatResults);
-  $('f-plat-search').addEventListener('blur',function(){if(!this.value.trim()) $('f-plat-results').hidden=true});
-  $('f-plat-results').addEventListener('mousedown',function(e){e.preventDefault()});
   $('f-plat-search').addEventListener('keydown',function(e){
     if(e.key!=='Enter') return;
     e.preventDefault();
-    var fb=$('f-plat-results').querySelector('button'); if(fb) fb.click();
+    if(!this.value.trim()) return;
+    addDraftPlatform(this.value); this.value=''; renderPlatDraft();
   });
   $('f-plat-results').addEventListener('click',function(e){
     var b=e.target.closest('button[data-p]'); if(!b) return;
@@ -1151,11 +1166,16 @@ li.game .editor{padding:18px}
   });
   $('f-tagpick').addEventListener('click',function(e){
     var b=e.target.closest('button[data-tag]'); if(!b) return;
-    var cur=parseTags($('f-tags').value), i=cur.indexOf(b.dataset.tag);
-    if(i>=0) cur.splice(i,1); else cur.push(b.dataset.tag);
-    $('f-tags').value=cur.join(', '); renderPick();
+    var parts=$('f-tags').value.split(','), frag=parts.pop().trim();
+    var cur=parseTags(parts.join(',')), i=cur.indexOf(b.dataset.tag);
+    if(i>=0&&!frag) cur.splice(i,1); else if(i<0) cur.push(b.dataset.tag);
+    $('f-tags').value=cur.join(', ')+(cur.length&&frag?', ':''); if(frag) $('f-tags').value=cur.join(', '); renderPick();
   });
   $('f-tags').addEventListener('input',renderPick);
+  $('f-tags').addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return;
+    e.preventDefault(); this.value=parseTags(this.value).join(', '); renderPick();
+  });
 
   /* ---------- tag manager ---------- */
   var managing=false, tmEdit=null, tmConfirm=null;
@@ -1443,6 +1463,108 @@ li.game .editor{padding:18px}
   $('accent-reset').addEventListener('click',function(){setAccent(DEFAULT_ACCENT)});
   document.addEventListener('click',function(e){if(!$('settings-panel').hidden&&!e.target.closest('#settings-panel,#btn-settings')){$('settings-panel').hidden=true; $('btn-settings').setAttribute('aria-expanded','false')}});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('settings-panel').hidden){$('settings-panel').hidden=true; $('btn-settings').setAttribute('aria-expanded','false'); $('btn-settings').focus()}});
+
+  /* ---------- select mode and bulk edit ---------- */
+  var selectMode=false, sel=new Set(), bulk=null;
+  var PLUS_SVG=$('btn-add').innerHTML;
+  var PENCIL_SVG='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+  function renderSelUI(){
+    var n=sel.size, edit=selectMode&&n>0, fab=$('btn-add');
+    $('btn-select').setAttribute('aria-pressed',String(selectMode)); $('btn-select').textContent=selectMode?'Done':'Select';
+    $('selbar').hidden=!selectMode; $('sel-count').textContent=n+' selected';
+    var was=fab.dataset.mode==='edit';
+    if(edit!==was){fab.dataset.mode=edit?'edit':'add'; fab.innerHTML=edit?PENCIL_SVG:PLUS_SVG; fab.setAttribute('aria-label',edit?'Edit selected games':'Add game'); fab.title=edit?'Edit selected games':'Add game'}
+    if(edit) fab.setAttribute('aria-label','Edit '+n+' selected game'+(n===1?'':'s'));
+  }
+  function setSelectMode(on){
+    selectMode=on; if(!on) sel.clear(); if(on) openId=null;
+    renderList();
+  }
+  $('btn-select').addEventListener('click',function(){setSelectMode(!selectMode)});
+  $('sel-clear').addEventListener('click',function(){sel.clear(); renderList()});
+  $('sel-all').addEventListener('click',function(){list.querySelectorAll('li.game').forEach(function(li){sel.add(li.dataset.id)}); renderList()});
+  list.addEventListener('click',function(e){
+    if(!selectMode) return;
+    var li=e.target.closest('li.game'); if(!li||e.target.closest('.nest-toggle')) return;
+    e.preventDefault(); e.stopPropagation();
+    var id=li.dataset.id; if(sel.has(id)) sel.delete(id); else sel.add(id);
+    li.classList.toggle('sel',sel.has(id)); renderSelUI();
+  },true);
+  var BMODES={status:[['replace','Replace'],['add','Add'],['remove','Remove']],plats:[['add','Add'],['remove','Remove'],['replace','Replace']],tags:[['add','Add'],['remove','Remove'],['replace','Replace']],notes:[['append','Append'],['replace','Replace']]};
+  function bulkSeg(k){return '<span class="seg" role="group" aria-label="How to apply">'+BMODES[k].map(function(m){return '<button type="button" class="btn" data-bmode="'+k+'" data-v="'+m[0]+'" aria-pressed="'+(bulk[k+'Mode']===m[0])+'">'+m[1]+'</button>'}).join('')+'</span>'}
+  function bulkTagList(){
+    var lc=lower(bulk.tq.trim()), all=allTagsAlpha().map(function(e){return e[0]}), have=bulk.tags.map(lower);
+    var hits=all.filter(function(t){return have.indexOf(lower(t))<0&&(!lc||lower(t).indexOf(lc)>=0)});
+    var exact=!lc||have.indexOf(lc)>=0||all.some(function(t){return lower(t)===lc});
+    return hits.map(function(t){return '<button type="button" class="tag" data-btg="1" data-t="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+(exact?'':'<button type="button" class="tag more" data-btg="1" data-t="'+esc(canonTag(bulk.tq))+'">+ Add &ldquo;'+esc(canonTag(bulk.tq))+'&rdquo;</button>');
+  }
+  function bulkHTML(){
+    var n=sel.size, ACT='<span class="add-actions">'+'__CHK__'+'__X__'+'</span>';
+    var chosenP=bulk.plats.map(function(p){return '<span class="tag plain">'+esc(p)+'<button type="button" class="x" data-bpx="'+esc(p)+'" aria-label="Remove '+esc(p)+'">&times;</button></span>'}).join('');
+    var chosenT=bulk.tags.map(function(t){return '<span class="tag">'+esc(t)+'<button type="button" class="x" data-btx="'+esc(t)+'" aria-label="Remove '+esc(t)+'">&times;</button></span>'}).join('');
+    return '<div class="add-head"><h2>Edit '+n+' game'+(n===1?'':'s')+'</h2>'+ACT+'</div>'+
+      '<p class="hint">Only the fields you fill in are changed. Games hidden by the search or filters are still included.</p>'+
+      '<label><span>Year</span><input data-bk="year" inputmode="numeric" placeholder="Leave blank to keep each year" value="'+esc(bulk.year)+'"></label>'+
+      '<div class="bulk-sec"><div class="taghead"><span class="fieldlabel">Status</span><span class="spacer"></span>'+bulkSeg('status')+'</div><div class="status-row">'+statusChipsHTML(bulk.status,'data-bst')+'</div></div>'+
+      '<div class="bulk-sec"><div class="taghead"><span class="fieldlabel">Platforms</span><span class="spacer"></span>'+bulkSeg('plats')+'</div><div class="tags">'+chosenP+'</div>'+
+        '<label><span>Filter or add a platform</span><input type="search" data-bk="pq" value="'+esc(bulk.pq)+'" placeholder="Type to filter or add a platform" autocomplete="off"></label><div class="tags pick" data-bplist>'+platResultsHTML(platformResults(bulk.pq,bulk.plats),'data-bpl="1"')+'</div></div>'+
+      '<div class="bulk-sec"><div class="taghead"><span class="fieldlabel">Tags</span><span class="spacer"></span>'+bulkSeg('tags')+'</div><div class="tags">'+chosenT+'</div>'+
+        '<label><span>Filter or add a tag</span><input data-bk="tq" value="'+esc(bulk.tq)+'" placeholder="Type to filter or add a tag" autocomplete="off"></label><div class="tags pick" data-btlist>'+bulkTagList()+'</div></div>'+
+      '<div class="bulk-sec"><div class="taghead"><span class="fieldlabel">Notes</span><span class="spacer"></span>'+bulkSeg('notes')+'</div><textarea data-bk="notes" placeholder="Leave blank to keep each game\'s notes">'+esc(bulk.notes)+'</textarea></div>'+
+      '<div class="add-foot"><span class="hint" id="bulk-msg" role="status"></span>'+ACT+'</div>';
+  }
+  function renderBulk(focusSel){
+    $('bulk').innerHTML=bulkHTML().split('__CHK__').join('<button type="button" class="btn ok x-btn" data-bulk="apply" aria-label="Apply to selected games" title="Apply"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button>').split('__X__').join('<button type="button" class="btn danger x-btn" data-bulk="cancel" aria-label="Cancel" title="Cancel"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>');
+    if(focusSel){var el=$('bulk').querySelector(focusSel); if(el) el.focus()}
+  }
+  function openBulk(){
+    bulk={year:'',status:[],statusMode:'replace',plats:[],platsMode:'add',tags:[],tagsMode:'add',notes:'',notesMode:'append',pq:'',tq:''};
+    renderBulk(); $('bulk').hidden=false; $('bulk').scrollTop=0;
+  }
+  function closeBulk(){$('bulk').hidden=true; bulk=null; $('bulk').innerHTML=''}
+  function applyBulk(){
+    var yr=bulk.year.trim(); if(yr&&!/^\d{4}$/.test(yr)){$('bulk-msg').textContent='Enter a 4-digit year, or leave it blank.'; $('bulk-msg').classList.add('err'); return}
+    var apply=function(cur,vals,mode,same){
+      var out=cur.slice();
+      if(mode==='replace') return vals.length?vals.slice():out;
+      if(mode==='remove') return out.filter(function(x){return !vals.some(function(v){return same(v,x)})});
+      vals.forEach(function(v){if(!out.some(function(x){return same(v,x)})) out.push(v)});
+      return out;
+    };
+    var eq=function(a,b){return lower(a)===lower(b)}, n=0;
+    sel.forEach(function(id){
+      var g=find(id); if(!g) return; n++;
+      if(yr) g.year=parseInt(yr,10);
+      if(bulk.status.length) setStatuses(g,apply(statusesOf(g),bulk.status,bulk.statusMode,function(a,b){return a===b}));
+      if(bulk.plats.length) g.platforms=apply(g.platforms||[],bulk.plats,bulk.platsMode,eq);
+      if(bulk.tags.length) g.tags=apply(g.tags||[],bulk.tags,bulk.tagsMode,eq);
+      var nt=bulk.notes.trim(); if(nt) g.notes=(bulk.notesMode==='append'&&g.notes&&g.notes.trim())?g.notes.replace(/\s+$/,'')+'\n'+nt:nt;
+    });
+    closeBulk(); selectMode=false; sel.clear(); persist(); render();
+  }
+  $('bulk').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b||!bulk) return;
+    var d=b.dataset;
+    if(d.bulk==='cancel'){closeBulk(); return}
+    if(d.bulk==='apply'){applyBulk(); return}
+    if(d.bmode){bulk[d.bmode+'Mode']=d.v; renderBulk(); return}
+    if(d.bst){var i=bulk.status.indexOf(d.bst); if(i>=0) bulk.status.splice(i,1); else bulk.status.push(d.bst); renderBulk(); return}
+    if(d.bpl){var pn=canonPlatform(d.p); if(pn&&bulk.plats.map(lower).indexOf(lower(pn))<0) bulk.plats.push(pn); bulk.pq=''; renderBulk('[data-bk="pq"]'); return}
+    if(d.bpx!==undefined){bulk.plats=bulk.plats.filter(function(x){return x!==d.bpx}); renderBulk(); return}
+    if(d.btg){var tn=canonTag(d.t); if(tn&&bulk.tags.map(lower).indexOf(lower(tn))<0) bulk.tags.push(tn); bulk.tq=''; renderBulk('[data-bk="tq"]'); return}
+    if(d.btx!==undefined){bulk.tags=bulk.tags.filter(function(x){return x!==d.btx}); renderBulk(); return}
+  });
+  $('bulk').addEventListener('input',function(e){
+    var k=e.target.dataset&&e.target.dataset.bk; if(!k||!bulk) return;
+    bulk[k]=e.target.value;
+    if(k==='pq') $('bulk').querySelector('[data-bplist]').innerHTML=platResultsHTML(platformResults(bulk.pq,bulk.plats),'data-bpl="1"');
+    if(k==='tq') $('bulk').querySelector('[data-btlist]').innerHTML=bulkTagList();
+  });
+  $('bulk').addEventListener('keydown',function(e){
+    if(e.key!=='Enter'||!bulk) return; var k=e.target.dataset&&e.target.dataset.bk;
+    if(k==='pq'){e.preventDefault(); var pn=canonPlatform(bulk.pq); if(pn&&bulk.plats.map(lower).indexOf(lower(pn))<0) bulk.plats.push(pn); bulk.pq=''; renderBulk('[data-bk="pq"]')}
+    else if(k==='tq'){e.preventDefault(); var tn=canonTag(bulk.tq); if(tn&&bulk.tags.map(lower).indexOf(lower(tn))<0) bulk.tags.push(tn); bulk.tq=''; renderBulk('[data-bk="tq"]')}
+  });
   var lastTap={id:null,timer:0};
   var editSnap=null;
   function openEditor(g,sec){
@@ -1488,7 +1610,6 @@ li.game .editor{padding:18px}
       var nm=b.dataset.secName, ed=li.querySelector(':scope > .editor')||li, sh2=secShown[g.id]||(secShown[g.id]={}); sh2[nm]=true;
       var els=ed.querySelectorAll('[data-sec="'+nm+'"]'); els.forEach(function(l){l.hidden=false}); b.hidden=true;
       sh2[nm+'Open']=true; var nb2=ed.querySelector('[data-nest="'+nm+'"]'); if(nb2) nb2.hidden=false; var tt2=ed.querySelector('[data-act="secnest"][data-k="'+nm+'"]'); if(tt2) tt2.setAttribute('aria-expanded','true');
-      var row=b.parentNode; if(!row.querySelector('[data-act="reveal"]:not([hidden])')) row.hidden=true;
       var inp=els[0]&&els[0].querySelector('input,button'); if(inp) inp.focus(); return;
     }
     if(act==='expand'){if(openId===g.id) return; expandedRows[g.id]=!expandedRows[g.id]; rerenderKeepingFocus(g.id,'[data-act="expand"]'); return}
@@ -1592,36 +1713,33 @@ li.game .editor{padding:18px}
     }
     persist(); renderSub();
   });
-  function openEditorPlatList(e){
-    var el=e.target; if(!el.dataset||el.dataset.f!=='platsearch') return;
-    var li=el.closest('.game'), g=li&&find(li.dataset.id), box=el.closest('label').nextElementSibling; if(!g||!box) return;
-    var pr=platformResults(el.value,g.platforms||[]);
-    box.innerHTML=platResultsHTML(pr,'data-act="addplat"'); box.hidden=pr===null;
-  }
-  list.addEventListener('focusin',openEditorPlatList);
-  list.addEventListener('click',openEditorPlatList);
-  list.addEventListener('focusout',function(e){
-    var el=e.target; if(!el.dataset||el.dataset.f!=='platsearch'||el.value.trim()) return;
-    var box=el.closest('label').nextElementSibling; if(box) box.hidden=true;
-  });
-  list.addEventListener('mousedown',function(e){if(e.target.closest('.mem-results')&&e.target.closest('button[data-act="addplat"]')) e.preventDefault()});
   list.addEventListener('input',function(e){
-    var el=e.target, kind=el.dataset.f; if(kind!=='memsearch'&&kind!=='platsearch') return;
-    var li=el.closest('.game'), g=find(li.dataset.id), box=el.closest('label').nextElementSibling;
-    if(!g||!box) return;
+    var el=e.target, kind=el.dataset.f; if(kind!=='memsearch'&&kind!=='platsearch'&&kind!=='newtag') return;
+    var li=el.closest('.game'), g=find(li.dataset.id); if(!g) return;
     if(kind==='memsearch'){
+      var box=el.closest('label').nextElementSibling; if(!box) return;
       var hits=memberResults(el.value,g.id,null);
       box.innerHTML=resultsHTML(hits,'data-act="addmember"'); box.hidden=hits===null;
+    } else if(kind==='platsearch'){
+      var pbox=el.closest('[data-more-sec]').querySelector('[data-plat-list]');
+      if(pbox) pbox.innerHTML=platResultsHTML(platformResults(el.value,g.platforms||[]),'data-act="addplat"');
     } else {
-      var pr=platformResults(el.value,g.platforms||[]);
-      box.innerHTML=platResultsHTML(pr,'data-act="addplat"'); box.hidden=pr===null;
+      var tbox=el.closest('[data-more-sec]').querySelector('[data-tag-list]');
+      if(tbox) tbox.innerHTML=tagPickHTML(g,el.value);
     }
   });
   list.addEventListener('keydown',function(e){
     var el=e.target;
-    if((el.dataset.f==='memsearch'||el.dataset.f==='platsearch')&&e.key==='Enter'){
+    if(el.dataset.f==='memsearch'&&e.key==='Enter'){
       e.preventDefault();
       var rb=el.closest('label').nextElementSibling, fb=rb&&rb.querySelector('button'); if(fb) fb.click();
+      return;
+    }
+    if(el.dataset.f==='platsearch'&&e.key==='Enter'){
+      e.preventDefault();
+      var li2=el.closest('.game'), g2=find(li2.dataset.id), pn2=canonPlatform(el.value);
+      if(g2&&pn2&&(g2.platforms||[]).map(lower).indexOf(lower(pn2))<0){g2.platforms=(g2.platforms||[]).concat([pn2]); persist(); rerenderKeepingFocus(g2.id,'[data-f="platsearch"]')}
+      else el.value='';
       return;
     }
     if(el.dataset.f!=='newtag'||e.key!=='Enter') return;
@@ -1647,6 +1765,7 @@ li.game .editor{padding:18px}
   window.addEventListener('scroll',placeFloat,{passive:true}); window.addEventListener('resize',placeFloatSoon);
   document.addEventListener('focusin',placeFloatSoon); document.addEventListener('focusout',placeFloatSoon);
   $('btn-add').addEventListener('click',function(){
+    if(selectMode&&sel.size){openBulk(); return}
     var open=$('add').hidden; setPanel('add','btn-add',open); if(open){$('f-title').focus({preventScroll:true})}
   });
   $('btn-clear-examples').addEventListener('click',function(){
@@ -1803,13 +1922,12 @@ li.game .editor{padding:18px}
 
   function setAddSecs(show){
     document.querySelectorAll('#add-form [data-sec]').forEach(function(l){l.hidden=!show});
-    document.querySelectorAll('#f-adders [data-areveal]').forEach(function(x){x.hidden=show}); $('f-adders').hidden=show;
+    document.querySelectorAll('#add-form [data-areveal]').forEach(function(x){x.hidden=show});
   }
-  $('f-adders').addEventListener('click',function(e){
+  $('add-form').addEventListener('click',function(e){
     var bt=e.target.closest('[data-areveal]'); if(!bt) return;
     var sec=bt.dataset.areveal, els=document.querySelectorAll('#add-form [data-sec="'+sec+'"]');
     els.forEach(function(l){l.hidden=false}); bt.hidden=true;
-    if(!$('f-adders').querySelector('[data-areveal]:not([hidden])')) $('f-adders').hidden=true;
     var inp=els[0]&&els[0].querySelector('input'); if(inp) inp.focus();
   });
   var draftStatuses=[];
