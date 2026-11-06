@@ -80,6 +80,37 @@ button,input,select,textarea{font:inherit; color:inherit}
 .sub{margin:8px 0 0; font:400 13px var(--font-mono); color:var(--muted); font-variant-numeric:tabular-nums}
 .btn.fab{position:fixed; left:50%; margin-left:-28px; bottom:max(16px,env(safe-area-inset-bottom)); width:56px; height:56px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.3); z-index:50}
 .btn.fab[aria-expanded="true"]{display:none}
+.btn.totop{position:fixed; left:max(36px,env(safe-area-inset-left)); bottom:calc(max(16px,env(safe-area-inset-bottom)) + 17px); width:22px; height:22px; opacity:.5; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent); border-color:var(--accent); color:var(--on-accent); box-shadow:0 4px 14px rgba(0,0,0,.3); z-index:55}
+#add{position:fixed; z-index:80; left:50%; top:12px; transform:translateX(-50%); width:min(860px,calc(100vw - 24px)); max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; box-shadow:0 0 0 100vmax rgba(0,0,0,.5), 0 10px 40px rgba(0,0,0,.4)}
+.g-title{touch-action:manipulation; -webkit-user-select:none; user-select:none}
+.app{position:relative}
+.btn.settings-btn{position:absolute; top:0; right:0; z-index:5}
+.top{padding-top:4px; padding-right:48px}
+.settings-panel{position:absolute; top:46px; right:0; z-index:90; width:min(300px,calc(100vw - 32px)); box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.swatches{display:flex; flex-wrap:wrap; gap:10px}
+.swatch{width:36px; height:36px; border-radius:50%; border:2px solid var(--line); background:var(--sw); padding:0; position:relative}
+.swatch[aria-pressed="true"]{border-color:var(--ink); box-shadow:0 0 0 2px var(--surface) inset}
+/* widgets */
+.widgets{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+.widget{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; min-width:0}
+.widget.open{grid-column:1/-1}
+.w-head{display:flex; align-items:center; gap:8px; justify-content:space-between}
+.w-title{font:600 14px var(--font-display); margin:0; min-width:0; overflow-wrap:anywhere}
+.w-count{font:500 12px var(--font-mono); color:var(--muted); margin-left:6px}
+.w-pick{display:flex; flex-direction:column; gap:10px; padding-top:4px; border-top:1px solid var(--line)}
+.w-pick .tags{max-height:132px; overflow-y:auto}
+.w-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+.w-list li{display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; padding:5px 0; border-top:1px solid var(--line); font-size:13.5px; min-width:0}
+.w-list li:first-child{border-top:0}
+.w-list .w-t{font:600 13.5px var(--font-body); overflow-wrap:anywhere; min-width:0; border:0; background:none; padding:0; text-align:left; color:var(--ink); cursor:pointer}
+.w-list .w-t:hover{color:var(--accent); text-decoration:underline}
+@keyframes flashrow{from{background:var(--accent-soft)}to{background:transparent}}
+.game.flash>.g-main{animation:flashrow 1.8s ease-out}
+.w-list .w-m{font:400 11px var(--font-mono); color:var(--muted)}
+.w-empty{margin:0; font-size:12.5px; color:var(--muted)}
+[data-sec][hidden],[data-nest][hidden],[data-more-sec][hidden],.add-sec[hidden],.adders[hidden]{display:none!important}
+.adders{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:8px}
+.add-sec{color:var(--accent); border-style:dashed; padding:6px 12px}
 .btn.ok{color:#1f8a4c; border-color:#1f8a4c}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.ok{color:#6FD197; border-color:#6FD197}}
 :root[data-theme="dark"] .btn.ok{color:#6FD197; border-color:#6FD197}
@@ -133,9 +164,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .game.collapsed .g-main{grid-template-columns:minmax(0,1fr) auto; padding-top:6px; padding-bottom:6px}
 .game.collapsed .g-side{grid-column:auto; flex-direction:row; align-items:center}
 .game.collapsed .pills{flex-direction:row; flex-wrap:wrap; justify-content:flex-end}
-.list.grid{align-items:start}
-.list.grid>.game.collapsed>.g-main{grid-template-columns:minmax(0,1fr) auto; flex:0 0 auto}
-.list.grid>.game.collapsed>.g-main .g-side{grid-column:auto; justify-content:flex-end}
 @media (prefers-reduced-motion:reduce){.row-chev .chev{transition:none}}
 .filters-head{display:inline-flex; align-items:center; gap:10px; align-self:flex-start; border:0; background:none; padding:4px 0; font:600 15px var(--font-display); color:var(--ink)}
 .filters-head .chev{width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(-45deg); transition:transform .15s}
@@ -145,6 +173,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 @media (prefers-reduced-motion:reduce){.filters-head .chev{transition:none}}
 .status-row{display:flex; flex-wrap:wrap; gap:8px}
 .schip{display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border-radius:6px; border:1px solid var(--line); background:var(--surface); font-weight:500}
+.schip.more{border-style:dashed; color:var(--muted); background:transparent}
 .schip .dot{width:9px; height:9px; border-radius:50%; background:var(--c)}
 .schip .n{font:500 13px var(--font-mono); color:var(--muted); font-variant-numeric:tabular-nums}
 .schip[aria-pressed="true"]{background:var(--bg-c); border-color:var(--c)}
@@ -240,12 +269,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .mem-results small{color:var(--muted); font:400 12px var(--font-mono)}
 .mem-results .none{padding:9px 12px; font-size:13px; color:var(--muted)}
 .g-side{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
-.list.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; background:none; border:0; border-radius:0; overflow:visible}
-.list.grid>.game{background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; display:flex; flex-direction:column}
-.list.grid>.game>.g-main{grid-template-columns:minmax(0,1fr); flex:1; align-content:space-between}
-.list.grid>.game>.g-main .g-side{grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center}
-.list.grid>.game>.g-main .pills{flex-direction:row; flex-wrap:wrap; align-items:center}
-.list.grid>.game:has(>.editor), .list.grid>.game:has(>.nested){grid-column:1/-1}
 .status-pill{appearance:none; -webkit-appearance:none; width:auto; padding:0 8px; line-height:1.55; border-radius:999px; font-weight:600; font-size:11px; border:1px solid var(--c); background:var(--bg-c); color:var(--c); text-align:center; cursor:pointer}
 .backup{display:flex; flex-direction:column; gap:8px; margin-top:14px}
 .backup-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
@@ -259,6 +282,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
 .rate{display:flex; gap:2px}
 .rate button{border:0; background:none; font-size:22px; line-height:1; color:var(--line); padding:2px 3px}
 .rate button[aria-pressed="true"]{color:var(--accent)}
+.editor{position:fixed; z-index:80; left:50%; top:12px; transform:translateX(-50%); width:min(860px,calc(100vw - 24px)); max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; background:var(--surface); border:1px solid var(--line); border-radius:8px; box-shadow:0 0 0 100vmax rgba(0,0,0,.5), 0 10px 40px rgba(0,0,0,.4)}
+li.game .editor{padding:18px}
 .editor-actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
 .editor-actions .spacer{flex:1}
 .empty{padding:36px 16px; text-align:center; color:var(--muted); display:flex; flex-direction:column; gap:12px; align-items:center}
@@ -278,13 +303,30 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   .editor{padding-left:16px}
   .nested .g-main{grid-template-columns:minmax(0,1fr); padding-left:16px}
   .nested .editor{padding-left:16px}
+  /* expanded entries keep the status pill beside the title */
+  .game:not(.collapsed)>.g-main{grid-template-columns:minmax(0,1fr) auto; align-items:start}
+  .game:not(.collapsed)>.g-main .g-side{grid-column:auto; flex-direction:column; align-items:flex-end}
+  .game:not(.collapsed)>.g-main .pills{justify-content:flex-end}
 }
+.g-act{display:flex; align-items:center; gap:8px}
+/* status pill stays on the title's first line; Edit sits at the bottom right corner */
+.game>.g-main{align-items:start}
+.game>.g-main .g-side{align-self:stretch; justify-content:space-between}
+.game.collapsed>.g-main .g-side{align-items:flex-start; justify-content:flex-end}
+.game>.g-main .pills{padding-top:2px}
 @media (prefers-reduced-motion:no-preference){
   .btn,.tag,.schip{transition:background-color .12s, border-color .12s}
 }
 </style>
 
 <div class="app">
+  <button type="button" class="btn icon-btn settings-btn" id="btn-settings" aria-label="Settings" aria-expanded="false" aria-controls="settings-panel" title="Settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+  <div class="panel settings-panel" id="settings-panel" hidden role="dialog" aria-label="Settings">
+    <h2 style="font-size:16px">Accent color</h2>
+    <div class="swatches" id="swatches" role="group" aria-label="Accent color"></div>
+    <label class="check" style="gap:10px"><input type="color" id="accent-custom" aria-label="Custom accent color" style="width:44px;height:32px;padding:2px"><span>Custom color</span></label>
+    <div><button type="button" class="btn sm" id="accent-reset">Reset to default</button></div>
+  </div>
   <header class="top">
     <div>
       <h1>Game Shelf</h1>
@@ -333,16 +375,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
         <label><span>Title</span><input name="title" id="f-title" required autocomplete="off"></label>
         <p class="hint" style="margin:0"><a id="bl-link" class="ext-link" target="_blank" rel="noopener noreferrer" aria-disabled="true">Search Backloggd for this title</a>. Copy the exact name from there and paste it above.</p>
       </div>
-      <div style="grid-column:1/-1; display:flex; flex-direction:column; gap:6px"><span class="fieldlabel">Status, pick any that apply</span><div class="status-row" id="f-status" role="group" aria-label="Status"></div></div>
-      <label><span>Year</span><input name="year" id="f-year" inputmode="numeric" placeholder="2019"></label>
-      <label><span>Started</span><input type="date" name="started" id="f-started"></label>
-      <label><span>Finished</span><input type="date" name="finished" id="f-finished"></label>
-      <div style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
-        <span class="fieldlabel">Platforms</span>
-        <div class="tags" id="f-plat-chosen" aria-label="Chosen platforms"></div>
-        <label><span>Search or add a platform</span><input type="search" id="f-plat-search" placeholder="Type to search, e.g. Switch" autocomplete="off"></label>
-        <ul class="mem-results" id="f-plat-results" hidden></ul>
-      </div>
       <div style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
         <label class="check"><input type="checkbox" name="isBundle" id="f-bundle"><span>This is a bundle of games</span></label>
         <div id="f-bundle-wrap" hidden style="display:flex; flex-direction:column; gap:8px">
@@ -351,11 +383,28 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
           <div class="tags" id="f-bundle-chosen" aria-label="Games in this bundle"></div>
         </div>
       </div>
-      <div style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
+      <label><span>Year</span><input name="year" id="f-year" inputmode="numeric" placeholder="2019"></label>
+      <div class="adders" id="f-adders">
+        <button type="button" class="btn sm add-sec" data-areveal="status">+ Add Status</button>
+        <button type="button" class="btn sm add-sec" data-areveal="dates">+ Add Dates</button>
+        <button type="button" class="btn sm add-sec" data-areveal="plats">+ Add Platforms</button>
+        <button type="button" class="btn sm add-sec" data-areveal="tags">+ Add Tags</button>
+        <button type="button" class="btn sm add-sec" data-areveal="notes">+ Add Notes</button>
+      </div>
+      <div data-sec="status" hidden style="grid-column:1/-1; display:flex; flex-direction:column; gap:6px"><span class="fieldlabel">Status, pick any that apply</span><div class="status-row" id="f-status" role="group" aria-label="Status"></div></div>
+      <label data-sec="dates" hidden><span>Started</span><input type="date" name="started" id="f-started"></label>
+      <label data-sec="dates" hidden><span>Finished</span><input type="date" name="finished" id="f-finished"></label>
+      <div data-sec="plats" hidden style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
+        <span class="fieldlabel">Platforms</span>
+        <div class="tags" id="f-plat-chosen" aria-label="Chosen platforms"></div>
+        <label><span>Search or add a platform</span><input type="search" id="f-plat-search" placeholder="Type to search, e.g. Switch" autocomplete="off"></label>
+        <ul class="mem-results" id="f-plat-results" hidden></ul>
+      </div>
+      <div data-sec="tags" hidden style="grid-column:1/-1; display:flex; flex-direction:column; gap:8px">
         <label><span>Tags</span><input name="tags" id="f-tags" list="taglist" placeholder="Tap a tag below, or type new ones separated by commas"></label>
         <div class="tags pick" id="f-tagpick" role="group" aria-label="Existing tags"></div>
       </div>
-      <label style="grid-column:1/-1"><span>Notes</span><textarea name="notes" id="f-notes" placeholder="Why you want to play it, who recommended it, where you left off"></textarea></label>
+      <label data-sec="notes" hidden style="grid-column:1/-1"><span>Notes</span><textarea name="notes" id="f-notes" placeholder="Why you want to play it, who recommended it, where you left off"></textarea></label>
       <div class="add-foot" style="grid-column:1/-1">
         <span class="hint" id="add-msg" role="status"></span>
         <span class="add-actions"><button type="submit" form="add-form" class="btn ok x-btn" aria-label="Add this game" title="Add game"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button><button type="button" class="btn danger x-btn" data-add-discard aria-label="Discard this game" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span>
@@ -376,7 +425,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       <div class="status-row" id="status-chips" role="group" aria-label="Filter by status"></div>
       <div class="panel" id="status-manager" hidden aria-labelledby="sm-h">
         <h2 id="sm-h">Manage play statuses</h2>
-        <p class="hint">Rename a status, add your own, or delete one you don't use. Deleting a status removes it from every game that has it. A game left with no status gets the first status in the list.</p>
+        <p class="hint">Rename a status, add your own, or delete one you don't use. Deleting a status removes it from every game that has it. A game left with no status just shows no status.</p>
         <ul class="tm-list" id="sm-list"></ul>
         <form id="sm-add" class="sm-add" autocomplete="off">
           <input id="sm-new" placeholder="New status name" aria-label="New status name" maxlength="30">
@@ -439,14 +488,12 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
         <option value="started">Recently started</option>
         <option value="finished">Recently finished</option>
       </select>
-      <span class="seg" role="group" aria-label="Display as">
-        <button class="btn" type="button" data-view="list" aria-pressed="true">List</button>
-        <button class="btn" type="button" data-view="grid" aria-pressed="false">Grid</button>
-      </span>
       <input id="q" type="search" placeholder="Search title, platform, tag or note" aria-label="Search your games" autocomplete="off" hidden>
     </div>
   </section>
 
+  <button type="button" class="btn totop" id="to-top" aria-label="Back to top" title="Back to top" hidden><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+  <section class="widgets" id="widgets" aria-label="Widgets"></section>
   <ul class="list" id="list"></ul>
   <div class="panel empty" id="empty" hidden></div>
   <p class="foot" id="foot"></p>
@@ -489,7 +536,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     var v=null; try{v=validStatuses(JSON.parse(localStorage.getItem(STATUS_KEY)||'null'))}catch(e){}
     applyStatuses(v||DEFAULT_STATUSES.map(function(x){return {id:x.id,label:x.label}}));
   })();
-  function addDefault(){return STATUSES.some(function(x){return x.id==='wishlist'})?'wishlist':defaultStatus()}
   function defaultStatus(){return STATUSES.some(function(x){return x.id==='backlog'})?'backlog':STATUSES[0].id}
   var KEY='gameshelf.v1';
   var $=function(id){return document.getElementById(id)};
@@ -514,11 +560,11 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   }
   normalizeGames(games);
   var f={q:'',status:new Set(),platforms:new Set(),tags:new Set(),mode:'any',pmode:'any',sort:'added'};
-  var openId=null, confirmDel=null, showAllTags=false, frozenOrder=null;
+  var openId=null, confirmDel=null, showAllTags=false, frozenOrder=null, secShown={};
   var TAG_CAP=2, tagsExpanded={}, expandedRows={};
   var nestPref={};
-  var ui={filters:false,status:false,platforms:false,tags:false,view:'list',uv:4};
-  try{var savedUi=JSON.parse(localStorage.getItem('gameshelf.ui')||'null'); if(savedUi){ui.view=savedUi.view==='grid'?'grid':'list'; ui.filters=savedUi.filters===true; if(savedUi.uv===4){ui.status=savedUi.status===true; ui.tags=savedUi.tags===true; ui.platforms=savedUi.platforms===true}}}catch(e){}
+  var ui={filters:false,status:false,platforms:false,tags:false,uv:4};
+  try{var savedUi=JSON.parse(localStorage.getItem('gameshelf.ui')||'null'); if(savedUi){ui.filters=savedUi.filters===true; if(savedUi.uv===4){ui.status=savedUi.status===true; ui.tags=savedUi.tags===true; ui.platforms=savedUi.platforms===true}}}catch(e){}
   function toggleUi(k){ui[k]=!ui[k]; try{localStorage.setItem('gameshelf.ui',JSON.stringify(ui))}catch(e){} renderToggles()}
 
   /* ---------- storage ---------- */
@@ -588,18 +634,17 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     return out;
   }
   function statusesOf(g){
-    var a=Array.isArray(g.statuses)?g.statuses:[g.status];
+    var a=Array.isArray(g.statuses)?g.statuses:(g.status?[g.status]:[]);
     var out=STATUSES.map(function(x){return x.id}).filter(function(id){return a.indexOf(id)>=0});
-    return out.length?out:[defaultStatus()];
+    return out;
   }
   function setStatuses(g,arr){
     var out=STATUSES.map(function(x){return x.id}).filter(function(id){return arr.indexOf(id)>=0});
-    if(!out.length) return false;
-    g.statuses=out; g.status=out[0]; return true;
+    g.statuses=out; g.status=out[0]||''; return true;
   }
   function hasStatus(g,id){return statusesOf(g).indexOf(id)>=0}
-  function statusChipsHTML(sel,act){
-    return STATUSES.map(function(x){
+  function statusChipsHTML(sel,act,onlySel){
+    return STATUSES.filter(function(x){return !onlySel||sel.indexOf(x.id)>=0}).map(function(x){
       return '<button type="button" class="schip st-'+x.id+'" '+act+'="'+x.id+'" aria-pressed="'+(sel.indexOf(x.id)>=0)+'"><span class="dot"></span>'+x.label+'</button>';
     }).join('');
   }
@@ -838,6 +883,23 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     renderToggles();
   }
   function editorHTML(g){
+    var sh=secShown[g.id]||(secShown[g.id]={});
+    if(statusesOf(g).length) sh.status=true;
+    if(String(g.notes||'').trim()) sh.notes=true;
+    if(g.started||g.finished) sh.dates=true;
+    if(g.rating) sh.rating=true;
+    if((g.platforms||[]).length) sh.plats=true;
+    if(g.tags.length) sh.tags=true;
+    if(!g.tags.length) sh.tagsMore=true;
+    var has={status:statusesOf(g).length,plats:(g.platforms||[]).length,rating:!!g.rating,dates:!!(g.started||g.finished),tags:g.tags.length};
+    Object.keys(has).forEach(function(k){if(sh[k+'Open']===undefined) sh[k+'Open']=!has[k]});
+    var nestHead=function(k,label,style){return '<button type="button" class="nest-toggle" data-act="secnest" data-k="'+k+'" aria-expanded="'+!!sh[k+'Open']+'"><span class="chev" aria-hidden="true"></span>'+label+'</button><div data-nest="'+k+'"'+(sh[k+'Open']?'':' hidden')+' style="'+(style||'display:flex;flex-direction:column;gap:8px')+'">'};
+    var stN=statusesOf(g).length, ptN=(g.platforms||[]).length;
+    if(!statusesOf(g).length) sh.statusMore=true;
+    if(!(g.platforms||[]).length) sh.platsMore=true;
+    var hid=function(k){return sh[k]?'':' hidden'};
+    var ADD=[['status','+ Add Status'],['dates','+ Add Dates'],['rating','+ Add Rating'],['plats','+ Add Platforms'],['tags','+ Add Tags'],['notes','+ Add Notes']].filter(function(x){return !sh[x[0]]});
+    var adders='<div class="adders"'+(ADD.length?'':' hidden')+'>'+ADD.map(function(x){return '<button type="button" class="btn sm add-sec" data-act="reveal" data-sec-name="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>';
     var rate=[1,2,3,4,5].map(function(v){return '<button type="button" data-act="rate" data-v="'+v+'" aria-pressed="'+(v<=(g.rating||0))+'" aria-label="'+v+(v===1?' star':' stars')+'">&#9733;</button>'}).join('');
     var chips=sortedTags(g).map(function(t){return '<span class="tag">'+esc(t)+'<button type="button" class="x" data-act="untag" data-tag="'+esc(t)+'" aria-label="Remove tag '+esc(t)+'">&times;</button></span>'}).join('');
     var avail=allTags().map(function(e){return e[0]}).filter(function(t){return g.tags.indexOf(t)<0})
@@ -859,26 +921,28 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     }
     var bundleSection='<div class="editor-tags"><label class="check"><input type="checkbox" data-f="isBundle"'+(g.isBundle?' checked':'')+'><span>This game is a bundle</span></label>'+inner+'</div>';
     var plats=(g.platforms||[]).map(function(p){return '<span class="tag plain">'+esc(p)+'<button type="button" class="x" data-act="unplat" data-p="'+esc(p)+'" aria-label="Remove platform '+esc(p)+'">&times;</button></span>'}).join('');
-    var platPicker='<div class="editor-tags"><span class="fieldlabel">Platforms</span><div class="tags">'+plats+'</div><label><span>Search or add a platform</span><input type="search" data-f="platsearch" placeholder="Type to search, e.g. Switch" autocomplete="off"></label><ul class="mem-results" hidden></ul></div>';
+    var platPicker='<div class="editor-tags" data-sec="plats"'+hid('plats')+'>'+nestHead('plats','Platforms'+(ptN?' ('+ptN+')':''))+'<div class="tags">'+plats+(sh.platsMore?'':'<button type="button" class="tag more" data-act="revealmore" data-more="plats">+ Add more platforms</button>')+'</div><div class="editor-tags" data-more-sec="plats"'+(sh.platsMore?'':' hidden')+'><label><span>Search or add a platform</span><input type="search" data-f="platsearch" placeholder="Type to search, e.g. Switch" autocomplete="off"></label><ul class="mem-results" hidden></ul></div></div></div>';
     var del=confirmDel===g.id
       ? '<span class="hint">Delete this game?</span><button type="button" class="btn sm danger" data-act="delete-yes">Yes, delete</button><button type="button" class="btn sm" data-act="delete-no">Keep it</button>'
       : '<button type="button" class="btn sm danger" data-act="delete">Delete game</button>';
-    return '<div class="editor">'+
-      '<div class="editor-tags"><span class="fieldlabel">Status, pick any that apply</span><div class="status-row" role="group" aria-label="Status">'+statusChipsHTML(statusesOf(g),'data-sts')+'</div></div>'+
+    return '<div class="editor"><div class="add-head"><h2>Edit game</h2><span class="add-actions"><button type="button" class="btn ok x-btn" data-act="save" aria-label="Save changes" title="Save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button><button type="button" class="btn danger x-btn" data-act="discard" aria-label="Discard changes" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span></div>'+
       '<div class="grid">'+
         '<div class="title-cell"><label><span>Title</span><input data-f="title" value="'+esc(g.title)+'"></label>'+
           '<a class="ext-link" data-bl-edit target="_blank" rel="noopener noreferrer" href="'+esc(backloggdUrl(g.title))+'">Search Backloggd for this title</a></div>'+
+        '<div style="grid-column:1/-1">'+bundleSection+'</div>'+
         '<label><span>Year</span><input data-f="year" inputmode="numeric" value="'+esc(g.year||'')+'"></label>'+
-        '<label><span>Started</span><input type="date" data-f="started" value="'+esc(g.started||'')+'"></label>'+
+        adders+
+        '<div class="editor-tags" data-sec="status"'+hid('status')+' style="grid-column:1/-1">'+nestHead('status','Status'+(stN?' ('+stN+')':''))+'<div class="status-row" role="group" aria-label="Status">'+statusChipsHTML(statusesOf(g),'data-sts',!sh.statusMore)+(sh.statusMore?'':'<button type="button" class="schip more" data-act="revealmore" data-more="status">+ Add more statuses</button>')+'</div></div></div>'+
+        '<div data-sec="dates"'+hid('dates')+' style="grid-column:1/-1">'+nestHead('dates','Dates'+(has.dates?' ('+[fmtDate(g.started)&&'started',fmtDate(g.finished)&&'finished'].filter(Boolean).join(', ')+')':''),'display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px')+'<label><span>Started</span><input type="date" data-f="started" value="'+esc(g.started||'')+'"></label>'+
         '<label><span>Finished</span><input type="date" data-f="finished" value="'+esc(g.finished||'')+'"></label>'+
-        '<p class="hint err date-warn" style="grid-column:1/-1;margin:0"'+(datesBad(g)?'':' hidden')+'>The finish date is before the start date.</p>'+
-        '<div style="display:flex;flex-direction:column;gap:5px"><span class="fieldlabel">Rating</span><div class="rate" role="group" aria-label="Rating">'+rate+'</div></div>'+
+        '<p class="hint err date-warn" style="grid-column:1/-1;margin:0"'+(datesBad(g)?'':' hidden')+'>The finish date is before the start date.</p></div></div>'+
+        '<div data-sec="rating"'+hid('rating')+' style="display:flex;flex-direction:column;gap:5px">'+nestHead('rating','Rating'+(g.rating?' ('+g.rating+'/5)':''))+'<div class="rate" role="group" aria-label="Rating">'+rate+'</div></div></div>'+
       '</div>'+
       platPicker+
-      '<div class="editor-tags"><span class="fieldlabel">Tags</span><div class="tags">'+chips+'</div>'+pick+
-        '<input data-f="newtag" list="taglist" placeholder="Add a tag and press Enter" aria-label="Add a tag"></div>'+bundleSection+
-      '<label><span>Notes</span><textarea data-f="notes">'+esc(g.notes||'')+'</textarea></label>'+
-      '<div class="editor-actions">'+del+'<span class="spacer"></span><button type="button" class="btn sm" data-act="toggle">Done</button></div>'+
+      '<div class="editor-tags" data-sec="tags"'+hid('tags')+'>'+nestHead('tags','Tags'+(g.tags.length?' ('+g.tags.length+')':''))+'<div class="tags">'+chips+(sh.tagsMore?'':'<button type="button" class="tag more" data-act="revealmore" data-more="tags">+ Add more tags</button>')+'</div><div class="editor-tags" data-more-sec="tags"'+(sh.tagsMore?'':' hidden')+'>'+pick+
+        '<input data-f="newtag" list="taglist" placeholder="Add a tag and press Enter" aria-label="Add a tag"></div></div></div>'+
+      '<label data-sec="notes"'+hid('notes')+'><span>Notes</span><textarea data-f="notes">'+esc(g.notes||'')+'</textarea></label>'+
+      '<div class="editor-actions">'+del+'<span class="spacer"></span><span class="add-actions"><button type="button" class="btn ok x-btn" data-act="save" aria-label="Save changes" title="Save"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg></button><button type="button" class="btn danger x-btn" data-act="discard" aria-label="Discard changes" title="Discard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button></span></div>'+
     '</div>';
   }
   function metaText(g){return [(g.platforms||[]).join(', '),g.year].filter(Boolean).map(esc).join('  /  ')}
@@ -916,8 +980,8 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
           ):'')+
         '</div>'+
         '<div class="g-side">'+
-          '<div class="pills">'+statusesOf(g).map(function(x){return '<span class="status-pill st-'+x+'">'+statusLabel(x)+'</span>'}).join('')+'</div>'+
-          (exp?stars+'<button type="button" class="btn sm" data-act="toggle" aria-expanded="'+open+'">'+(open?'Done':'Edit')+'</button>':'')+
+          '<div class="pills">'+statusesOf(g).map(function(x){return '<button type="button" class="status-pill st-'+x+'" data-act="editstatus" aria-label="Edit status, currently '+esc(statusLabel(x))+'">'+statusLabel(x)+'</button>'}).join('')+'</div>'+
+          (exp?'<div class="g-act">'+stars+(open?'':'<button type="button" class="btn sm" data-act="toggle" aria-expanded="false">Edit</button>')+'</div>':'')+
         '</div>'+
       '</div>'+
       (open?editorHTML(g):'')+nestList+
@@ -926,7 +990,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   function renderList(){
     var t=buildTree(), r=t.rows, active=isActive();
     $('list').innerHTML=r.map(function(x){return rowHTML(x.g,x,false)}).join('');
-    $('list').hidden=!r.length; $('list').classList.toggle('grid',ui.view==='grid');
+    $('list').hidden=!r.length;
     var e=$('empty'); e.hidden=!!r.length;
     if(!r.length){
       e.innerHTML=games.length
@@ -935,6 +999,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     }
     $('resultline').textContent='';
     $('resultbar').hidden=!active;
+    renderWidgets();
   }
   function renderBanner(){$('banner').hidden=!games.some(function(g){return g.sample})}
   function renderPick(){
@@ -970,6 +1035,86 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     renderPlatResults();
   }
   function addDraftPlatform(p){p=canonPlatform(p); if(p&&draftPlatforms.map(lower).indexOf(lower(p))<0) draftPlatforms.push(p)}
+
+  /* ---------- widgets: two side-by-side lists, each with its own multi-select filters ---------- */
+  var WKEY='gameshelf.widgets';
+  var widgets=[{name:'Widget 1',status:[],platforms:[],tags:[],mode:'any',open:false},{name:'Widget 2',status:[],platforms:[],tags:[],mode:'any',open:false}];
+  try{var sw=JSON.parse(localStorage.getItem(WKEY)||'null'); if(Array.isArray(sw)) sw.slice(0,2).forEach(function(x,i){if(!x) return;
+    var w=widgets[i]; if(typeof x.name==='string'&&x.name.trim()) w.name=x.name.slice(0,30);
+    ['status','platforms','tags'].forEach(function(k){if(Array.isArray(x[k])) w[k]=x[k].filter(function(v){return typeof v==='string'})});
+    w.mode=x.mode==='all'?'all':'any'})}catch(e){}
+  var wShowAll={};
+  function saveWidgets(){try{localStorage.setItem(WKEY,JSON.stringify(widgets.map(function(w){return {name:w.name,status:w.status,platforms:w.platforms,tags:w.tags,mode:w.mode}})))}catch(e){}}
+  function widgetMatches(w,g){
+    var any=function(want,have){return w.mode==='all'?want.every(function(x){return have.indexOf(x)>=0}):want.some(function(x){return have.indexOf(x)>=0})};
+    if(w.status.length&&!any(w.status,statusesOf(g))) return false;
+    if(w.platforms.length&&!any(w.platforms.map(lower),(g.platforms||[]).map(lower))) return false;
+    if(w.tags.length&&!any(w.tags,g.tags)) return false;
+    return true;
+  }
+  function widgetHTML(w,i){
+    var has=w.status.length+w.platforms.length+w.tags.length>0;
+    var hits=has?games.filter(function(g){return widgetMatches(w,g)}).sort(byTitle):[];
+    var LIM=8, shown=wShowAll[i]?hits:hits.slice(0,LIM);
+    var h='<div class="w-head"><h3 class="w-title">'+esc(w.name)+(has?'<span class="w-count">'+hits.length+'</span>':'')+'</h3><button type="button" class="btn sm" data-wi="'+i+'" data-wact="'+(w.open?'close':'open')+'" aria-expanded="'+w.open+'">'+(w.open?'Done':'Filters')+'</button></div>';
+    if(w.open){
+      var counts={}; games.forEach(function(g){statusesOf(g).forEach(function(x){counts[x]=1})});
+      h+='<div class="w-pick"><label><span>Name</span><input data-wi="'+i+'" data-wname value="'+esc(w.name)+'" maxlength="30"></label>'+
+        '<div><span class="fieldlabel">Status</span><div class="status-row">'+STATUSES.map(function(x){return '<button type="button" class="schip st-'+x.id+'" data-wi="'+i+'" data-wk="status" data-wv="'+x.id+'" aria-pressed="'+(w.status.indexOf(x.id)>=0)+'"><span class="dot"></span>'+esc(x.label)+'</button>'}).join('')+'</div></div>'+
+        '<div><span class="fieldlabel">Platforms</span><div class="tags">'+usedPlatforms().map(function(e){return '<button type="button" class="tag plain" data-wi="'+i+'" data-wk="platforms" data-wv="'+esc(e[0])+'" aria-pressed="'+(w.platforms.map(lower).indexOf(lower(e[0]))>=0)+'">'+esc(e[0])+'</button>'}).join('')+'</div></div>'+
+        '<div><span class="fieldlabel">Tags</span><div class="tags">'+allTagsAlpha().map(function(e){return '<button type="button" class="tag" data-wi="'+i+'" data-wk="tags" data-wv="'+esc(e[0])+'" aria-pressed="'+(w.tags.indexOf(e[0])>=0)+'">'+esc(e[0])+'</button>'}).join('')+'</div></div>'+
+        '<div class="taghead"><span class="seg" role="group" aria-label="How selected filters match"><button class="btn" type="button" data-wi="'+i+'" data-wmode="any" aria-pressed="'+(w.mode==='any')+'">Match any</button><button class="btn" type="button" data-wi="'+i+'" data-wmode="all" aria-pressed="'+(w.mode==='all')+'">Match all</button></span><span class="spacer"></span>'+(has?'<button type="button" class="btn sm" data-wi="'+i+'" data-wact="clear">Clear</button>':'')+'</div></div>';
+    }
+    if(!has) h+='<p class="w-empty">Tap Filters and pick statuses, platforms or tags to fill this widget.</p>';
+    else if(!hits.length) h+='<p class="w-empty">No games match.</p>';
+    else{
+      h+='<ul class="w-list">'+shown.map(function(g){return '<li><button type="button" class="w-t" data-goto="'+esc(g.id)+'">'+esc(g.title)+'</button><span class="w-m">'+esc(metaTextPlain(g))+'</span></li>'}).join('')+'</ul>';
+      if(hits.length>LIM) h+='<button type="button" class="btn sm" data-wi="'+i+'" data-wact="more">'+(wShowAll[i]?'Show fewer':'Show '+(hits.length-LIM)+' more')+'</button>';
+    }
+    return '<div class="widget'+(w.open?' open':'')+'" data-w="'+i+'">'+h+'</div>';
+  }
+  function metaTextPlain(g){return [(g.platforms||[]).join(', '),g.year].filter(Boolean).join(' / ')}
+  function renderWidgets(){
+    var ids=STATUSES.map(function(x){return x.id}), tg=allTags().map(function(e){return e[0]});
+    widgets.forEach(function(w){w.status=w.status.filter(function(x){return ids.indexOf(x)>=0}); w.tags=w.tags.filter(function(x){return tg.indexOf(x)>=0})});
+    var a=document.activeElement, keep=a&&a.matches&&a.matches('[data-wname]')?{i:a.dataset.wi,pos:a.selectionStart}:null;
+    if(keep) return; /* don't rebuild while the name is being typed */
+    $('widgets').innerHTML=widgets.map(widgetHTML).join('');
+  }
+  (function(){
+    var t=$('to-top');
+    function upd(){t.hidden=window.scrollY<300}
+    window.addEventListener('scroll',upd,{passive:true}); upd();
+    t.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  })();
+  /* Tapping a game in a widget jumps to its entry in the main list, clearing filters or opening its bundle if needed. */
+  function gotoGame(id){
+    var g=find(id); if(!g) return;
+    if(isActive()) clearAll();
+    var par=parentOf(g); if(par){nestPref[par.id]={sig:filterSig(),open:true}; renderList()}
+    var row=$('list').querySelector('li.game[data-id="'+id+'"]'); if(!row) return;
+    row.scrollIntoView({block:'start',behavior:'smooth'});
+    row.classList.add('flash'); setTimeout(function(){row.classList.remove('flash')},1900);
+  }
+  $('widgets').addEventListener('click',function(e){
+    var gt=e.target.closest('[data-goto]'); if(gt){gotoGame(gt.dataset.goto); return}
+    var b=e.target.closest('[data-wi]'); if(!b||b.matches('input')) return;
+    var i=+b.dataset.wi, w=widgets[i]; if(!w) return;
+    if(b.dataset.wk){var arr=w[b.dataset.wk], v=b.dataset.wv, k=b.dataset.wk==='platforms'?arr.map(lower).indexOf(lower(v)):arr.indexOf(v); if(k>=0) arr.splice(k,1); else arr.push(v)}
+    else if(b.dataset.wmode) w.mode=b.dataset.wmode;
+    else if(b.dataset.wact==='open') w.open=true;
+    else if(b.dataset.wact==='close') w.open=false;
+    else if(b.dataset.wact==='clear'){w.status=[]; w.platforms=[]; w.tags=[]}
+    else if(b.dataset.wact==='more') wShowAll[i]=!wShowAll[i];
+    else return;
+    saveWidgets(); renderWidgets();
+  });
+  $('widgets').addEventListener('input',function(e){
+    var el=e.target.closest('[data-wname]'); if(!el) return;
+    var w=widgets[+el.dataset.wi]; w.name=el.value.slice(0,30)||('Widget '+(+el.dataset.wi+1)); saveWidgets();
+    var t=el.closest('.widget').querySelector('.w-title'); if(t) t.firstChild.textContent=w.name;
+  });
+  $('widgets').addEventListener('focusout',function(e){if(e.target.matches&&e.target.matches('[data-wname]')) setTimeout(renderWidgets,0)});
   function render(){renderSub(); renderStatus(); renderPlatforms(); renderTags(); renderPick(); renderBundlePick(); renderPlatDraft(); renderList(); renderBanner(); renderManager(); renderPlatManager(); renderStatusManager()}
   $('f-plat-search').addEventListener('input',renderPlatResults);
   $('f-plat-search').addEventListener('focus',renderPlatResults);
@@ -1104,7 +1249,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   function refreshStatusUi(){
     var ids=STATUSES.map(function(x){return x.id});
     Array.from(f.status).forEach(function(x){if(ids.indexOf(x)<0) f.status.delete(x)});
-    draftStatuses=draftStatuses.filter(function(x){return ids.indexOf(x)>=0}); if(!draftStatuses.length) draftStatuses=[addDefault()];
+    draftStatuses=draftStatuses.filter(function(x){return ids.indexOf(x)>=0});
     games.forEach(function(g){setStatuses(g,statusesOf(g))});
     persist(); render(); renderAddStatus();
   }
@@ -1241,15 +1386,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     var b=e.target.closest('[data-mode]'); if(!b) return;
     f.mode=b.dataset.mode; renderTags(); renderList();
   });
-  function renderView(){
-    document.querySelectorAll('[data-view]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.view===ui.view))});
-    $('list').classList.toggle('grid',ui.view==='grid');
-  }
-  document.querySelector('[data-view]').parentNode.addEventListener('click',function(e){
-    var b=e.target.closest('[data-view]'); if(!b||ui.view===b.dataset.view) return;
-    ui.view=b.dataset.view; try{localStorage.setItem('gameshelf.ui',JSON.stringify(ui))}catch(x){} renderView();
-  });
-  renderView();
   $('toggle-filters').addEventListener('click',function(){toggleUi('filters')});
   $('toggle-status').addEventListener('click',function(){toggleUi('status')});
   $('toggle-tags').addEventListener('click',function(){toggleUi('tags')});
@@ -1271,27 +1407,102 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     render();
     var el=sel&&list.querySelector('[data-id="'+id+'"] '+sel); if(el) el.focus();
   }
+
+  /* ---------- settings: accent color ---------- */
+  var ACCENT_KEY='gameshelf.accent', DEFAULT_ACCENT='#2F49E6';
+  var ACCENTS=[['Indigo','#2F49E6'],['Steel','#4A6F91'],['Teal','#0B7285'],['Green','#2B7A4B'],['Orange','#B4540A'],['Rose','#C2255C'],['Purple','#7048E8'],['Red','#C92A2A']];
+  function hexToHsl(h){
+    var m=/^#?([0-9a-f]{6})$/i.exec(h); if(!m) return null; var n=parseInt(m[1],16), r=(n>>16&255)/255, g=(n>>8&255)/255, b=(n&255)/255;
+    var mx=Math.max(r,g,b), mn=Math.min(r,g,b), l=(mx+mn)/2, d=mx-mn, hh=0, ss=0;
+    if(d){ss=d/(1-Math.abs(2*l-1)); hh=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4; hh=Math.round(hh*60); if(hh<0) hh+=360}
+    return {h:hh,s:Math.round(ss*100),l:Math.round(l*100)};
+  }
+  function luminance(h){var n=parseInt(h.slice(1),16), c=[n>>16&255,n>>8&255,n&255].map(function(v){v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}); return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+  function applyAccent(hex){
+    var el=document.getElementById('accent-css'); if(!el){el=document.createElement('style'); el.id='accent-css'; document.body.appendChild(el)}
+    var hsl=hexToHsl(hex); if(!hsl||hex.toLowerCase()===DEFAULT_ACCENT.toLowerCase()){el.textContent=''; return}
+    var on=luminance(hex)>.45?'#12172B':'#FFFFFF';
+    var dk=hsl.s?('hsl('+hsl.h+' '+Math.min(100,hsl.s+10)+'% 72%)'):'hsl(0 0% 78%)', dkSoft='hsl('+hsl.h+' '+Math.min(60,hsl.s)+'% 20%)', soft='hsl('+hsl.h+' '+Math.min(90,hsl.s+20)+'% 92%)';
+    var light=':root{--accent:'+hex+'; --on-accent:'+on+'; --accent-soft:'+soft+'}';
+    var dark='--accent:'+dk+'; --on-accent:#0E1220; --accent-soft:'+dkSoft;
+    el.textContent=light+'@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){'+dark+'}}:root[data-theme="dark"]{'+dark+'}';
+  }
+  var accent=DEFAULT_ACCENT; try{var sa=localStorage.getItem(ACCENT_KEY); if(sa&&/^#[0-9a-f]{6}$/i.test(sa)) accent=sa}catch(e){}
+  applyAccent(accent);
+  function renderSwatches(){
+    $('swatches').innerHTML=ACCENTS.map(function(a){return '<button type="button" class="swatch" style="--sw:'+a[1]+'" data-accent="'+a[1]+'" aria-label="'+a[0]+'" title="'+a[0]+'" aria-pressed="'+(accent.toLowerCase()===a[1].toLowerCase())+'"></button>'}).join('');
+    $('accent-custom').value=accent.toLowerCase();
+  }
+  function setAccent(hex){accent=hex; try{localStorage.setItem(ACCENT_KEY,hex)}catch(e){} applyAccent(hex); renderSwatches()}
+  renderSwatches();
+  $('btn-settings').addEventListener('click',function(e){
+    e.stopPropagation(); var open=$('settings-panel').hidden; $('settings-panel').hidden=!open; this.setAttribute('aria-expanded',String(open));
+  });
+  $('swatches').addEventListener('click',function(e){var b=e.target.closest('[data-accent]'); if(b) setAccent(b.dataset.accent)});
+  $('accent-custom').addEventListener('input',function(){setAccent(this.value)});
+  $('accent-reset').addEventListener('click',function(){setAccent(DEFAULT_ACCENT)});
+  document.addEventListener('click',function(e){if(!$('settings-panel').hidden&&!e.target.closest('#settings-panel,#btn-settings')){$('settings-panel').hidden=true; $('btn-settings').setAttribute('aria-expanded','false')}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('settings-panel').hidden){$('settings-panel').hidden=true; $('btn-settings').setAttribute('aria-expanded','false'); $('btn-settings').focus()}});
+  var lastTap={id:null,timer:0};
+  var editSnap=null;
+  function openEditor(g,sec){
+    if(openId===g.id) return;
+    openId=null; frozenOrder=buildTree().rows.map(function(x){return x.g.id}); editSnap=JSON.stringify(games);
+    delete secShown[g.id]; if(sec) secShown[g.id]=sec; openId=g.id; confirmDel=null; renderList();
+  }
+  /* Save keeps the edits (they are stored as you type); discard puts the shelf back as it was when the editor opened. */
+  function closeEditor(save){
+    var id=openId; if(!id) return;
+    if(!save&&editSnap){games=JSON.parse(editSnap); normalizeGames(games); persist()}
+    openId=null; frozenOrder=null; editSnap=null; delete secShown[id]; confirmDel=null; render();
+    var row=list.querySelector('li.game[data-id="'+id+'"]'); if(row) row.scrollIntoView({block:'start'});
+  }
   list.addEventListener('click',function(e){
     if(e.target.closest('button, a, input, select, textarea, label, .g-tags, .g-notes, .nest-toggle, .editor')) return;
     var main=e.target.closest('.g-main'), li=main&&main.parentNode; if(!li||!li.classList.contains('game')) return;
-    var sel=window.getSelection&&window.getSelection(); if(sel&&String(sel).length) return;
+    var sel=window.getSelection&&window.getSelection(); if(sel&&String(sel).length&&!e.target.closest('.g-title')) return;
     var inRow=e.target.closest('.g-title, .pills, .g-side')||li.classList.contains('collapsed');
     var g=find(li.dataset.id); if(!g||!inRow||openId===g.id) return;
+    if(e.target.closest('.g-title')){ /* wait briefly so a second tap on the title can open the editor */
+      if(lastTap.id===g.id){clearTimeout(lastTap.timer); lastTap={id:null,timer:0}; openEditor(g); return}
+      var gid=g.id;
+      lastTap={id:gid,timer:setTimeout(function(){lastTap={id:null,timer:0}; expandedRows[gid]=!expandedRows[gid]; rerenderKeepingFocus(gid,null)},280)};
+      return;
+    }
     expandedRows[g.id]=!expandedRows[g.id]; rerenderKeepingFocus(g.id,null);
   });
   list.addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     var li=b.closest('.game'), g=li&&find(li.dataset.id), act=b.dataset.act; if(!g||(!act&&!b.dataset.sts)) return;
+    if(act==='secnest'){
+      var k4=b.dataset.k, sh4=secShown[g.id]||(secShown[g.id]={}); sh4[k4+'Open']=!sh4[k4+'Open'];
+      var nb4=li.querySelector(':scope > .editor [data-nest="'+k4+'"]'); if(nb4) nb4.hidden=!sh4[k4+'Open']; b.setAttribute('aria-expanded',String(sh4[k4+'Open'])); return;
+    }
+    if(act==='revealmore'){
+      var mn=b.dataset.more, sh3=secShown[g.id]||(secShown[g.id]={}); sh3[mn+'More']=true;
+      if(mn==='status'){rerenderKeepingFocus(g.id,null); return}
+      var ed3=li.querySelector(':scope > .editor')||li, box=ed3.querySelector('[data-more-sec="'+mn+'"]'); if(box) box.hidden=false; b.hidden=true;
+      var i3=box&&box.querySelector('input'); if(i3) i3.focus(); return;
+    }
+    if(act==='reveal'){
+      var nm=b.dataset.secName, ed=li.querySelector(':scope > .editor')||li, sh2=secShown[g.id]||(secShown[g.id]={}); sh2[nm]=true;
+      var els=ed.querySelectorAll('[data-sec="'+nm+'"]'); els.forEach(function(l){l.hidden=false}); b.hidden=true;
+      sh2[nm+'Open']=true; var nb2=ed.querySelector('[data-nest="'+nm+'"]'); if(nb2) nb2.hidden=false; var tt2=ed.querySelector('[data-act="secnest"][data-k="'+nm+'"]'); if(tt2) tt2.setAttribute('aria-expanded','true');
+      var row=b.parentNode; if(!row.querySelector('[data-act="reveal"]:not([hidden])')) row.hidden=true;
+      var inp=els[0]&&els[0].querySelector('input,button'); if(inp) inp.focus(); return;
+    }
     if(act==='expand'){if(openId===g.id) return; expandedRows[g.id]=!expandedRows[g.id]; rerenderKeepingFocus(g.id,'[data-act="expand"]'); return}
     if(act==='moretags'){tagsExpanded[g.id]=!tagsExpanded[g.id]; rerenderKeepingFocus(g.id,'[data-act="moretags"]'); return}
     if(act==='tag'){tagClick(b.dataset.tag); return}
-    if(act==='toggle'){
-      var closing=openId===g.id;
-      if(!closing){openId=null; frozenOrder=buildTree().rows.map(function(x){return x.g.id})} else frozenOrder=null;
-      openId=closing?null:g.id; confirmDel=null; renderList();
-      if(closing){var row=list.querySelector('li.game[data-id="'+g.id+'"]'); if(row) row.scrollIntoView({block:'start'})}
+    if(act==='editstatus'){
+      if(openId!==g.id) openEditor(g,{statusOpen:true});
+      var sh5=secShown[g.id]||(secShown[g.id]={}); sh5.statusOpen=true;
+      var sr=list.querySelector('li.game[data-id="'+g.id+'"] > .editor [data-sec="status"]'); if(sr){sr.hidden=false; var nb5=sr.querySelector('[data-nest="status"]'); if(nb5) nb5.hidden=false; var t5=sr.querySelector('[data-act="secnest"]'); if(t5) t5.setAttribute('aria-expanded','true'); sr.scrollIntoView({block:'center',behavior:'smooth'})}
       return;
     }
+    if(act==='toggle'){ if(openId===g.id) closeEditor(true); else openEditor(g); return; }
+    if(act==='save'){closeEditor(true); return}
+    if(act==='discard'){closeEditor(false); return}
     if(b.dataset.sts){
       var cur=statusesOf(g), id=b.dataset.sts, nx=cur.indexOf(id)>=0?cur.filter(function(x){return x!==id}):cur.concat(id);
       if(setStatuses(g,nx)){persist(); rerenderKeepingFocus(g.id,'[data-sts="'+id+'"]')} return;
@@ -1336,7 +1547,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     if(act==='delete-no'){confirmDel=null; renderList(); return}
     if(act==='delete-yes'){
       games.forEach(function(x){if(x.bundleId===g.id) x.bundleId=null});
-      games=games.filter(function(x){return x.id!==g.id}); openId=null; frozenOrder=null; confirmDel=null;
+      games=games.filter(function(x){return x.id!==g.id}); openId=null; frozenOrder=null; editSnap=null; confirmDel=null;
       persist(); render();
     }
   });
@@ -1436,7 +1647,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   window.addEventListener('scroll',placeFloat,{passive:true}); window.addEventListener('resize',placeFloatSoon);
   document.addEventListener('focusin',placeFloatSoon); document.addEventListener('focusout',placeFloatSoon);
   $('btn-add').addEventListener('click',function(){
-    var open=$('add').hidden; setPanel('add','btn-add',open); if(open){$('add').scrollIntoView({block:'start'}); $('f-title').focus({preventScroll:true}); placeFloatSoon()}
+    var open=$('add').hidden; setPanel('add','btn-add',open); if(open){$('f-title').focus({preventScroll:true})}
   });
   $('btn-clear-examples').addEventListener('click',function(){
     games=games.filter(function(g){return !g.sample}); f.tags.clear(); f.status.clear(); f.platforms.clear(); persist(); render();
@@ -1584,15 +1795,26 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
       games=games.concat(add);
       backupMsg('Added '+add.length+' games.');
     }else{
-      games=arr; openId=null; frozenOrder=null; confirmDel=null;
+      games=arr; openId=null; frozenOrder=null; editSnap=null; confirmDel=null;
       backupMsg('Replaced your shelf with '+arr.length+' games.');
     }
     clearImport(); f.tags.clear(); f.status.clear(); f.platforms.clear(); persist(); render(); renderAddStatus();
   });
 
-  var draftStatuses=[addDefault()];
+  function setAddSecs(show){
+    document.querySelectorAll('#add-form [data-sec]').forEach(function(l){l.hidden=!show});
+    document.querySelectorAll('#f-adders [data-areveal]').forEach(function(x){x.hidden=show}); $('f-adders').hidden=show;
+  }
+  $('f-adders').addEventListener('click',function(e){
+    var bt=e.target.closest('[data-areveal]'); if(!bt) return;
+    var sec=bt.dataset.areveal, els=document.querySelectorAll('#add-form [data-sec="'+sec+'"]');
+    els.forEach(function(l){l.hidden=false}); bt.hidden=true;
+    if(!$('f-adders').querySelector('[data-areveal]:not([hidden])')) $('f-adders').hidden=true;
+    var inp=els[0]&&els[0].querySelector('input'); if(inp) inp.focus();
+  });
+  var draftStatuses=[];
   document.querySelectorAll('[data-add-discard]').forEach(function(btn){btn.addEventListener('click',function(){
-    $('add-form').reset(); draftPlatforms=[]; draftMembers.clear(); draftStatuses=[addDefault()];
+    $('add-form').reset(); setAddSecs(false); draftPlatforms=[]; draftMembers.clear(); draftStatuses=[];
     $('add-msg').textContent=''; syncBackloggdLink(); renderAddStatus(); render();
     setPanel('add','btn-add',false); $('btn-add').focus();
   })});
@@ -1601,7 +1823,6 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
   $('f-status').addEventListener('click',function(e){
     var b=e.target.closest('[data-ast]'); if(!b) return;
     var id=b.dataset.ast, nx=draftStatuses.indexOf(id)>=0?draftStatuses.filter(function(x){return x!==id}):draftStatuses.concat(id);
-    if(!nx.length) return;
     draftStatuses=nx; renderAddStatus(); var again=$('f-status').querySelector('[data-ast="'+id+'"]'); if(again) again.focus();
   });
 
@@ -1625,7 +1846,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     addDraftPlatform($('f-plat-search').value);
     var plats=draftPlatforms.slice(); draftPlatforms=[];
     var ng={
-      id:uid(), title:title, status:addDefault(), platforms:plats,
+      id:uid(), title:title, status:'', platforms:plats,
       year:parseInt(fd.get('year'),10)||parseInt(tt.year,10)||null, started:started, finished:finished, tags:parseTags(fd.get('tags')), rating:0, notes:String(fd.get('notes')||'').trim(), added:Date.now(), source:'manual'
     };
     if(fd.get('isBundle')){
@@ -1636,7 +1857,7 @@ label>span,.fieldlabel{font:500 11px/1 var(--font-mono); letter-spacing:.08em; t
     setStatuses(ng,draftStatuses);
     draftMembers.clear();
     games.unshift(ng);
-    persist(); this.reset(); draftStatuses=[addDefault()]; renderAddStatus();
+    persist(); this.reset(); setAddSecs(false); draftStatuses=[]; renderAddStatus();
     m.textContent=''; syncBackloggdLink(); render();
     setPanel('add','btn-add',false); $('btn-add').focus();
     backupMsg('Added '+title+'.'); clearTimeout(addMsgTimer); addMsgTimer=setTimeout(function(){backupMsg('')},3500);
